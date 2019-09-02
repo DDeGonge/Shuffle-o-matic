@@ -17,8 +17,8 @@ class Motor(object):
    	def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
    		steps = self._calc_steps(distance_mm)
    		minPause = 1 / (velocity_mmps * self.steps_per_mm)
-   		rampDelta = 
-   		rampLen = 
+   		rampSlope = 0
+   		rampLen = 0
 
    	def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
    		return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)

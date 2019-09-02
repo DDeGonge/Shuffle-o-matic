@@ -1,7 +1,21 @@
 __version__ = '0.1.0'
 
-# This driver will not continuously power servo, so don't expect it to.
+import RPi.GPIO as GPIO
 
-class Servo(object):
-    def __init__(self):
-        print()
+class RCServo(object):
+    def __init__(self, servopin, pwm_hz=50):
+    	if servopin == None:
+    		raise Exception("Error, no pin specified for RCServo Object.")
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(servopin, GPIO.OUT)
+        self.pwm = GPIO.PWM(servopin, pwm_hz)
+        self.enable()
+
+    def update(self, duty):
+    	self.pwm.ChangeFrequency(duty)
+
+    def enable(self, duty=50):
+        self.pwm.start(duty)
+
+    def disable(self):
+        self.pwm.stop()
