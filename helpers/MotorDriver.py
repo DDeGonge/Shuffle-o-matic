@@ -1,33 +1,77 @@
 __version__ = '0.1.0'
 
 from gpiozero import LED
+import helpers.Config as cfg
 import math
+
+class Dispenser(object):
+    def __init__(self):
+        self.motor = Motor(step_pin = cfg.d_stepper_step,
+                            dir_pin = cfg.d_stepper_dir,
+                            limit_pin = cfg.d_stepper_lim,
+                            stepspermm = cfg.d_step_per_mm)
+        self.motor.home()
+
+    def raise_stage(self):
+        self.motor.absolute_move(cfg.disp_move_mm, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
+
+    def lower_stage(self):
+        self.motor.absolute_move(0.2, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
+
+
+class Pusher(object):
+    def __init__(self):
+        self.motor = Motor(step_pin = cfg.p_stepper_step,
+                            dir_pin = cfg.p_stepper_dir,
+                            limit_pin = cfg.p_stepper_lim,
+                            stepspermm = cfg.p_step_per_mm)
+        self.motor.home()
+
+    def run(self):
+    	self.motor.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+    	self.motor.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+
+
+class Bins(object):
+    def __init__(self):
+        self.motor = Motor(step_pin = cfg.b_stepper_step,
+                            dir_pin = cfg.b_stepper_dir,
+                            limit_pin = cfg.b_stepper_lim,
+                            stepspermm = cfg.b_step_per_mm)
+        self.motor.home()
+
+    def load_bin_pos(self, bin_num):
+        self.motor.absolute_move(bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+
+    def unload_bin_pos(self, bin_num):
+        self.motor.absolute_move(bin_heights_unload_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+
 
 class Motor(object):
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm):
-    	self.pos_mm = 0
-    	self.steppin = LED(step_pin)
-    	self.dirpin = LED(dir_pin)
-    	self.steps_per_mm = stepspermm
-    	self.error = 0.
+        self.pos_mm = 0
+        self.steppin = LED(step_pin)
+        self.dirpin = LED(dir_pin)
+        self.steps_per_mm = stepspermm
+        self.error = 0.
 
     def home(self):
-    	print()
+        print()
 
-   	def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
-   		steps = self._calc_steps(distance_mm)
-   		minPause = 1 / (velocity_mmps * self.steps_per_mm)
-   		rampSlope = 0
-   		rampLen = 0
+    def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
+        steps = self._calc_steps(distance_mm)
+        minPause = 1 / (velocity_mmps * self.steps_per_mm)
+        rampSlope = 0
+        rampLen = 0
 
-   	def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
-   		return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
+    def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
+         return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
 
     def pos_mm(self):
-    	return pos_mm
+        return pos_mm
 
     def _calc_steps(self, dist_mm):
-    	steps_tot = (dist_mm + self.error) * self.steps_per_mm
-    	steps = math.floor(steps_tot)
-    	self.error = steps_tot - steps
-    	return steps
+        steps_tot = (dist_mm + self.error) * self.steps_per_mm
+        steps = math.floor(steps_tot)
+        self.error = steps_tot - steps
+        return steps
