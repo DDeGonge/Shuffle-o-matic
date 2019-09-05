@@ -1,5 +1,5 @@
 """ SERVO PINS """
-servo0_pwm = 12
+servo0_pwm = 18 # PI pin 12
 
 """ STEPPER """
 # Dispense stepper

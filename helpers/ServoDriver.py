@@ -12,9 +12,9 @@ class RCServo(object):
         self.enable()
 
     def update(self, duty):
-    	self.pwm.ChangeFrequency(duty)
+        self.pwm.ChangeDutyCycle(duty)
 
-    def enable(self, duty=50):
+    def enable(self, duty=5):
         self.pwm.start(duty)
 
     def disable(self):
