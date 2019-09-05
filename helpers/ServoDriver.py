@@ -4,8 +4,8 @@ import RPi.GPIO as GPIO
 
 class RCServo(object):
     def __init__(self, servopin, pwm_hz=50):
-    	if servopin == None:
-    		raise Exception("Error, no pin specified for RCServo Object.")
+        if servopin == None:
+            raise Exception("Error, no pin specified for RCServo Object.")
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(servopin, GPIO.OUT)
         self.pwm = GPIO.PWM(servopin, pwm_hz)
