@@ -5,53 +5,53 @@ import helpers.Config as cfg
 import time
 import math
 
-class Dispenser(object):
+class Dispenser(Motor):
     def __init__(self):
-        self.motor = Motor(step_pin = cfg.d_stepper_step,
-                            dir_pin = cfg.d_stepper_dir,
-                            limit_pin = cfg.d_stepper_lim,
-                            stepspermm = cfg.d_step_per_mm,
-                            invert = cfg.d_stepper_reverse)
-        self.motor.home()
+        super().__init__(step_pin = cfg.d_stepper_step,
+                        dir_pin = cfg.d_stepper_dir,
+                        limit_pin = cfg.d_stepper_lim,
+                        stepspermm = cfg.d_step_per_mm,
+                        invert = cfg.d_stepper_reverse)
+        self.home()
 
     def raise_stage(self):
-        self.motor.absolute_move(cfg.disp_move_mm, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
+        self.absolute_move(cfg.disp_move_mm, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
 
     def lower_stage(self):
-        self.motor.absolute_move(0.2, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
+        self.absolute_move(0.2, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
 
 
-class Pusher(object):
+class Pusher(Motor):
     def __init__(self):
-        self.motor = Motor(step_pin = cfg.p_stepper_step,
-                            dir_pin = cfg.p_stepper_dir,
-                            limit_pin = cfg.p_stepper_lim,
-                            stepspermm = cfg.p_step_per_mm,
-                            invert = cfg.p_stepper_reverse)
-        self.motor.home()
+        super().__init__(step_pin = cfg.p_stepper_step,
+                        dir_pin = cfg.p_stepper_dir,
+                        limit_pin = cfg.p_stepper_lim,
+                        stepspermm = cfg.p_step_per_mm,
+                        invert = cfg.p_stepper_reverse)
+        self.home()
 
     def run(self):
-        self.motor.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
-        self.motor.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        self.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        self.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
 
-class Bins(object):
+class Bins(Motor):
     def __init__(self):
-        self.motor = Motor(step_pin = cfg.b_stepper_step,
-                            dir_pin = cfg.b_stepper_dir,
-                            limit_pin = cfg.b_stepper_lim,
-                            stepspermm = cfg.b_step_per_mm,
-                            invert = cfg.b_stepper_reverse)
-        self.motor.home()
+        super().__init__(step_pin = cfg.b_stepper_step,
+                        dir_pin = cfg.b_stepper_dir,
+                        limit_pin = cfg.b_stepper_lim,
+                        stepspermm = cfg.b_step_per_mm,
+                        invert = cfg.b_stepper_reverse)
+        self.home()
 
     def load_bin_pos(self, bin_num):
-        self.motor.absolute_move(bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+        self.absolute_move(cfg.bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
     def unload_bin_pos(self, bin_num):
-        self.motor.absolute_move(bin_heights_unload_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+        self.absolute_move(cfg.bin_heights_unload_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
 
-class Motor(object):
+class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
         self.pos_mm = 0
         self.steppin = LED(step_pin)
@@ -87,9 +87,6 @@ class Motor(object):
 
     def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
          return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
-
-    def pos_mm(self):
-        return pos_mm
 
     def _calc_steps(self, dist_mm):
         steps_tot = (dist_mm + self.error) * self.steps_per_mm
