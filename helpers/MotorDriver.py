@@ -2,6 +2,7 @@ __version__ = '0.1.0'
 
 from gpiozero import LED
 import helpers.Config as cfg
+import time
 import math
 
 class Dispenser(object):
@@ -9,7 +10,8 @@ class Dispenser(object):
         self.motor = Motor(step_pin = cfg.d_stepper_step,
                             dir_pin = cfg.d_stepper_dir,
                             limit_pin = cfg.d_stepper_lim,
-                            stepspermm = cfg.d_step_per_mm)
+                            stepspermm = cfg.d_step_per_mm,
+                            invert = cfg.d_stepper_reverse)
         self.motor.home()
 
     def raise_stage(self):
@@ -24,12 +26,13 @@ class Pusher(object):
         self.motor = Motor(step_pin = cfg.p_stepper_step,
                             dir_pin = cfg.p_stepper_dir,
                             limit_pin = cfg.p_stepper_lim,
-                            stepspermm = cfg.p_step_per_mm)
+                            stepspermm = cfg.p_step_per_mm,
+                            invert = cfg.p_stepper_reverse)
         self.motor.home()
 
     def run(self):
-    	self.motor.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
-    	self.motor.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        self.motor.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        self.motor.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
 
 class Bins(object):
@@ -37,7 +40,8 @@ class Bins(object):
         self.motor = Motor(step_pin = cfg.b_stepper_step,
                             dir_pin = cfg.b_stepper_dir,
                             limit_pin = cfg.b_stepper_lim,
-                            stepspermm = cfg.b_step_per_mm)
+                            stepspermm = cfg.b_step_per_mm,
+                            invert = cfg.b_stepper_reverse)
         self.motor.home()
 
     def load_bin_pos(self, bin_num):
@@ -48,21 +52,38 @@ class Bins(object):
 
 
 class Motor(object):
-    def __init__(self, step_pin, dir_pin, limit_pin, stepspermm):
+    def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
         self.pos_mm = 0
         self.steppin = LED(step_pin)
         self.dirpin = LED(dir_pin)
         self.steps_per_mm = stepspermm
         self.error = 0.
+        self.invert = invert
 
     def home(self):
         print()
 
     def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
+    	# Set direction
+        if (self.invert * distance_mm) < 0:
+            self.dirpin.on()
+            distance_mm = abs(distance_mm)
+        else:
+            self.dirpin.off()
+
+        # Calculate move
         steps = self._calc_steps(distance_mm)
-        minPause = 1 / (velocity_mmps * self.steps_per_mm)
-        rampSlope = 0
-        rampLen = 0
+        move_delays = self._calc_move(steps, velocity_mmps, accel_mmps2)
+
+        # Execute move
+        movestart = time.time()
+        nextstep = movestart
+        for stepdel in move_delays:
+            nextstep += stepdel
+            while time.time() < nextstep:
+                pass
+            self._step()
+        return True
 
     def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
          return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
@@ -75,3 +96,17 @@ class Motor(object):
         steps = math.floor(steps_tot)
         self.error = steps_tot - steps
         return steps
+
+    def _calc_move(self, steps, vel_mmps, acc_mmps2):
+        vel_delay_s = (1 / (vel_mmps * self.steps_per_mm))
+        return [vel_delay_s]*steps
+
+        # TODO create acceleration and jerk ramping
+        acc_delay_ms = (1 / (acc_mmps2 * self.steps_per_mm))
+        ramp = range(vel_delay_ms, 5000, acc_delay_ms)
+        movebuffer = []
+
+    def _step(self):
+        self.steppin.on()
+        sleep(cfg.step_len_s)
+        self.steppin.off()
