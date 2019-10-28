@@ -39,4 +39,4 @@ step_len_s = 0.000001 # 1us is normal
 bin_vel_mmps = 90
 bin_acc_mmps2 = 500
 bin_heights_load_mm = [10,20,30,40,50,60,70] # bin 0 (bottom) to bin n (top)
-bin_heights_unload_mm = [60,70,80,90,100,110,120] # bin 0 (bottom) to bin n (top)
+bin_unload_shift_mm = 50 # bin 0 (bottom) to bin n (top)

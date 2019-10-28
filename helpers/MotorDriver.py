@@ -48,7 +48,7 @@ class Bins(Motor):
         self.absolute_move(cfg.bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
     def unload_bin_pos(self, bin_num):
-        self.absolute_move(cfg.bin_heights_unload_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+        self.absolute_move(cfg.bin_heights_unload_mm[bin_num] + cfg.bin_unload_shift_mm, cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
 
 class Motor:
@@ -104,6 +104,7 @@ class Motor:
         movebuffer = []
 
     def _step(self):
+    	print(step)
         self.steppin.on()
         sleep(cfg.step_len_s)
         self.steppin.off()
