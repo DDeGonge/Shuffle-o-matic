@@ -27,7 +27,7 @@ class Motor:
             velocity_mmps = self.def_vel
         if accel_mmps2 is None:
             accel_mmps2 = self.def_acc
-            
+
         # Set direction
         if (self.invert * distance_mm) < 0:
             self.dirpin.on()
@@ -80,7 +80,7 @@ class Dispenser(Motor):
                         limit_pin = cfg.d_stepper_lim,
                         stepspermm = cfg.d_step_per_mm,
                         invert = cfg.d_stepper_reverse)
-        update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
+        self.update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
         self.home()
 
     def raise_stage(self):
@@ -97,7 +97,7 @@ class Pusher(Motor):
                         limit_pin = cfg.p_stepper_lim,
                         stepspermm = cfg.p_step_per_mm,
                         invert = cfg.p_stepper_reverse)
-        update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        self.update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
         self.home()
 
     def run(self):
@@ -112,7 +112,7 @@ class Bins(Motor):
                         limit_pin = cfg.b_stepper_lim,
                         stepspermm = cfg.b_step_per_mm,
                         invert = cfg.b_stepper_reverse)
-        update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+        self.update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
         self.home()
 
     def load_bin_pos(self, bin_num):
