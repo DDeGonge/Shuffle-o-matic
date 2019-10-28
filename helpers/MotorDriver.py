@@ -1,17 +1,22 @@
 __version__ = '0.1.0'
 
-from gpiozero import LED
+import RPi.GPIO as GPIO
 import Config as cfg
 import time
 import math
+
+GPIO.setmode(GPIO.BCM)
+
 
 DEBUG = True
 
 class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
         self.ticks = 0
-        self.steppin = LED(step_pin)
-        self.dirpin = LED(dir_pin)
+        self.steppin = step_pin
+        self.dirpin = dir_pin
+        GPIO.setup(steppin, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(dirpin, GPIO.OUT, initial=GPIO.HIGH)
         self.steps_per_mm = stepspermm
         self.error = 0.
         self.invert = invert
@@ -32,11 +37,11 @@ class Motor:
 
         # Set direction
         if (self.invert * distance_mm) < 0:
-            self.dirpin.on()
+            GPIO.output(self.dirpin, GPIO.HIGH)
             distance_mm *= -1
             stepdir = -1
         else:
-            self.dirpin.off()
+            GPIO.output(self.dirpin, GPIO.LOW)
             stepdir = 1
 
         # Calculate move
@@ -81,9 +86,9 @@ class Motor:
         movebuffer = []
 
     def _step(self):
-        self.steppin.on()
+        GPIO.output(self.steppin, GPIO.HIGH)
         time.sleep(cfg.step_len_s)
-        self.steppin.off()
+        GPIO.output(self.steppin, GPIO.HIGH)
 
 class Dispenser(Motor):
     def __init__(self):
