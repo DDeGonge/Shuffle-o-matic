@@ -7,7 +7,6 @@ import math
 
 GPIO.setmode(GPIO.BCM)
 
-
 DEBUG = True
 
 class Motor:
@@ -15,13 +14,22 @@ class Motor:
         self.ticks = 0
         self.steppin = step_pin
         self.dirpin = dir_pin
-        GPIO.setup(steppin, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(dirpin, GPIO.OUT, initial=GPIO.HIGH)
+        self.limit_pin = limit_pin
+        GPIO.setup(self.steppin, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(self.dirpin, GPIO.OUT, initial=GPIO.HIGH)
+        GPIO.setup(self.limit_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(self.limit_pin, GPIO.RISING)
         self.steps_per_mm = stepspermm
         self.error = 0.
         self.invert = invert
 
     def home(self):
+        self.relative_move(-300)
+        if self.is_homed:
+        	self.relative_move(3)
+        	self.relative_move(-5,1,50)
+        if not self.is_homed:
+        	raise('Error: Failed to home')
         print('homed')
 
     def update_defaults(self, vel, acc):
@@ -55,6 +63,8 @@ class Motor:
         nextstep = movestart
         for stepdel in move_delays:
             nextstep += stepdel
+            if GPIO.event_detected(self.limit_pin):
+            	break
             while time.time() < nextstep:
                 pass
             self._step()
@@ -65,6 +75,10 @@ class Motor:
 
     def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
          return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
+
+    @property
+    def is_homed(self):
+        return self.GPIO.input(self.limit_pin)
 
     @property
     def pos_mm(self):
