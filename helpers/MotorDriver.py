@@ -5,9 +5,11 @@ import Config as cfg
 import time
 import math
 
+DEBUG = True
+
 class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
-        self.pos_ticks = 0
+        self.ticks = 0
         self.steppin = LED(step_pin)
         self.dirpin = LED(dir_pin)
         self.steps_per_mm = stepspermm
@@ -41,6 +43,8 @@ class Motor:
         steps = self._calc_steps(distance_mm)
         move_delays = self._calc_move(steps, velocity_mmps, accel_mmps2)
 
+        if DEBUG: print(move_delays)
+
         # Execute move
         movestart = time.time()
         nextstep = movestart
@@ -49,7 +53,8 @@ class Motor:
             while time.time() < nextstep:
                 pass
             self._step()
-            self.pos_ticks += stepdir
+            self.ticks += stepdir
+        if DEBUG: print(self.pos_mm)
         return True
 
     def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
@@ -57,7 +62,7 @@ class Motor:
 
     @property
     def pos_mm(self):
-        return self.pos_ticks / self.steps_per_mm
+        return self.ticks / self.steps_per_mm
 
     def _calc_steps(self, dist_mm):
         steps_tot = (dist_mm + self.error) * self.steps_per_mm
@@ -75,7 +80,6 @@ class Motor:
         movebuffer = []
 
     def _step(self):
-        print(self.pos_mm)
         self.steppin.on()
         time.sleep(cfg.step_len_s)
         self.steppin.off()
