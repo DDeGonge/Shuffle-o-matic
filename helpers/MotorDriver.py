@@ -43,7 +43,7 @@ class Motor:
         steps = self._calc_steps(distance_mm)
         move_delays = self._calc_move(steps, velocity_mmps, accel_mmps2)
 
-        if DEBUG: print(move_delays)
+        #if DEBUG: print(move_delays)
 
         # Execute move
         movestart = time.time()
@@ -54,7 +54,8 @@ class Motor:
                 pass
             self._step()
             self.ticks += stepdir
-        if DEBUG: print(self.pos_mm)
+        if DEBUG: print('movetime:',time.time() - movestart)
+        if DEBUG: print('position:',self.pos_mm)
         return True
 
     def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
