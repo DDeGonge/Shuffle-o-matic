@@ -64,7 +64,7 @@ class Motor:
         for stepdel in move_delays:
             nextstep += stepdel
             if GPIO.event_detected(self.limit_pin):
-            	break
+            	return False
             while time.time() < nextstep:
                 pass
             self._step()
