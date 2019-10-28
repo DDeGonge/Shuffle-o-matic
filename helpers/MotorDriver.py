@@ -78,7 +78,7 @@ class Motor:
 
     @property
     def is_homed(self):
-        return self.GPIO.input(self.limit_pin)
+        return GPIO.input(self.limit_pin)
 
     @property
     def pos_mm(self):
@@ -112,7 +112,7 @@ class Dispenser(Motor):
                         stepspermm = cfg.d_step_per_mm,
                         invert = cfg.d_stepper_reverse)
         self.update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
-        self.home()
+        #self.home()
 
     def raise_stage(self):
         self.absolute_move(cfg.disp_move_mm, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
@@ -129,7 +129,7 @@ class Pusher(Motor):
                         stepspermm = cfg.p_step_per_mm,
                         invert = cfg.p_stepper_reverse)
         self.update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
-        self.home()
+        #self.home()
 
     def run(self):
         self.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
@@ -144,7 +144,7 @@ class Bins(Motor):
                         stepspermm = cfg.b_step_per_mm,
                         invert = cfg.b_stepper_reverse)
         self.update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
-        self.home()
+        #self.home()
 
     def load_bin_pos(self, bin_num):
         self.absolute_move(cfg.bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
