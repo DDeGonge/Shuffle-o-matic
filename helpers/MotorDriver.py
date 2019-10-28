@@ -15,9 +15,19 @@ class Motor:
         self.invert = invert
 
     def home(self):
-        print()
+        print('homed')
 
-    def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
+    def update_defaults(vel, acc):
+        self.def_vel = vel
+        self.def_acc = acc
+
+    def relative_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
+        # Pull defaults if vel or acc not specified
+        if velocity_mmps is None:
+            velocity_mmps = self.def_vel
+        if accel_mmps2 is None:
+            accel_mmps2 = self.def_acc
+            
         # Set direction
         if (self.invert * distance_mm) < 0:
             self.dirpin.on()
@@ -39,7 +49,7 @@ class Motor:
             self._step()
         return True
 
-    def absolute_move(self, position_mm, velocity_mmps, accel_mmps2):
+    def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
          return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
 
     def _calc_steps(self, dist_mm):
@@ -58,7 +68,7 @@ class Motor:
         movebuffer = []
 
     def _step(self):
-        print(step)
+        print('step')
         self.steppin.on()
         sleep(cfg.step_len_s)
         self.steppin.off()
@@ -70,6 +80,7 @@ class Dispenser(Motor):
                         limit_pin = cfg.d_stepper_lim,
                         stepspermm = cfg.d_step_per_mm,
                         invert = cfg.d_stepper_reverse)
+        update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
         self.home()
 
     def raise_stage(self):
@@ -86,6 +97,7 @@ class Pusher(Motor):
                         limit_pin = cfg.p_stepper_lim,
                         stepspermm = cfg.p_step_per_mm,
                         invert = cfg.p_stepper_reverse)
+        update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
         self.home()
 
     def run(self):
@@ -100,6 +112,7 @@ class Bins(Motor):
                         limit_pin = cfg.b_stepper_lim,
                         stepspermm = cfg.b_step_per_mm,
                         invert = cfg.b_stepper_reverse)
+        update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
         self.home()
 
     def load_bin_pos(self, bin_num):
