@@ -7,7 +7,7 @@ import math
 
 class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
-        self.pos_mm = 0.
+        self.pos_ticks = 0
         self.steppin = LED(step_pin)
         self.dirpin = LED(dir_pin)
         self.steps_per_mm = stepspermm
@@ -29,13 +29,13 @@ class Motor:
             accel_mmps2 = self.def_acc
 
         # Set direction
-        stepsize_mm = 1 / self.steps_per_mm
         if (self.invert * distance_mm) < 0:
             self.dirpin.on()
             distance_mm *= -1
-            stepsize_mm *= -1
+            stepdir = -1
         else:
             self.dirpin.off()
+            stepdir = 1
 
         # Calculate move
         steps = self._calc_steps(distance_mm)
@@ -49,11 +49,15 @@ class Motor:
             while time.time() < nextstep:
                 pass
             self._step()
-            self.pos_mm += stepsize_mm
+            self.pos_ticks += stepdir
         return True
 
     def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
          return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
+
+    @property
+    def pos_mm(self):
+        return self.pos_ticks / self.steps_per_mm
 
     def _calc_steps(self, dist_mm):
         steps_tot = (dist_mm + self.error) * self.steps_per_mm
