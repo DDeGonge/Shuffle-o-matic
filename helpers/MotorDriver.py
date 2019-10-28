@@ -70,7 +70,7 @@ class Motor:
     def _step(self):
         print('step')
         self.steppin.on()
-        sleep(cfg.step_len_s)
+        time.sleep(cfg.step_len_s)
         self.steppin.off()
 
 class Dispenser(Motor):
