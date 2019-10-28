@@ -1,25 +1,28 @@
 """ SERVO PINS """
 servo0_pwm = 18 # PI pin 12
 
+""" DC MOTOR PINS """
+motor0_enable = 0
+
 """ STEPPER """
 # Dispense stepper
-d_stepper_dir = 0
-d_stepper_step = 0
-d_stepper_lim = 0
+d_stepper_dir = 17
+d_stepper_step = 27
+d_stepper_lim = 22
 d_step_per_mm = 80
 d_stepper_reverse = 1 # change to -1 to reverse direction
 
 # Pusher stepper
-p_stepper_dir = 0
-p_stepper_step = 0
-p_stepper_lim = 0
+p_stepper_dir = 5
+p_stepper_step = 6
+p_stepper_lim = 13
 p_step_per_mm = 80
 p_stepper_reverse = 1 # change to -1 to reverse direction
 
 # Bins stepper
-b_stepper_dir = 0
-b_stepper_step = 0
-b_stepper_lim = 0
+b_stepper_dir = 16
+b_stepper_step = 20
+b_stepper_lim = 21
 b_step_per_mm = 80
 b_stepper_reverse = 1 # change to -1 to reverse direction
 
