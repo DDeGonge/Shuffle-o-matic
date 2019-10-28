@@ -17,7 +17,7 @@ class Motor:
     def home(self):
         print('homed')
 
-    def update_defaults(vel, acc):
+    def update_defaults(self, vel, acc):
         self.def_vel = vel
         self.def_acc = acc
 
