@@ -64,7 +64,7 @@ class Motor:
         print()
 
     def relative_move(self, distance_mm, velocity_mmps, accel_mmps2):
-    	# Set direction
+        # Set direction
         if (self.invert * distance_mm) < 0:
             self.dirpin.on()
             distance_mm = abs(distance_mm)
@@ -104,7 +104,7 @@ class Motor:
         movebuffer = []
 
     def _step(self):
-    	print(step)
+        print(step)
         self.steppin.on()
         sleep(cfg.step_len_s)
         self.steppin.off()
