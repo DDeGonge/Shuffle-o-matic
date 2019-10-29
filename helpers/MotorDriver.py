@@ -6,6 +6,7 @@ import time
 import math
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 DEBUG = True
 
