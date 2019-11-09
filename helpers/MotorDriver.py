@@ -1,7 +1,7 @@
 __version__ = '0.1.0'
 
 import RPi.GPIO as GPIO
-import Config as cfg
+import helpers.Config as cfg
 import time
 import math
 
