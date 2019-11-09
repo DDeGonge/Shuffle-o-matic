@@ -21,6 +21,8 @@ class RCServo(object):
 
     def move_and_disable(self, duty):
         movetime = abs(self.dutycycle - duty) * self.movespeed
+        if movetime == 0:
+            return
         movetime = self.minmovetime if movetime < self.minmovetime else movetime
         self.move(duty)
         time.sleep(movetime)
