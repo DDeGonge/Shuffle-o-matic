@@ -7,10 +7,10 @@ from helpers.CameraDriver import Camera
 import helpers.Config as cfg
 import time
 
-def Dispense_Card(RCServo s):
-    s.slow_move_and_disable(cfg.servo_max, cfg.servo_speed_rps)
+def Dispense_Card(servo):
+    servo.slow_move_and_disable(cfg.servo_max, cfg.servo_speed_rps)
     time.sleep(cfg.servo_dwell_s)
-    s.move_and_disable(cfg.servo_min)
+    servo.move_and_disable(cfg.servo_min)
 
 def Dump_Row(row_i):
     if (row_i > len(cfg.bin_heights_mm)) or (row_i < 0):
