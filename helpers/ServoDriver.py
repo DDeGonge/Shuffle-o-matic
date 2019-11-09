@@ -37,6 +37,8 @@ class RCServo(object):
     def slow_move(self, duty, speed_rps):
         updatefreq_hz = 20
         movedist = duty - self.dutycycle
+        if movedist == 0: 
+            return
         movetime = (abs(movedist) / 20) / speed_rps  # Convert from rps to pwm dutycycles
         numsteps = int(movetime * updatefreq_hz)
         stepsize = movedist / numsteps
