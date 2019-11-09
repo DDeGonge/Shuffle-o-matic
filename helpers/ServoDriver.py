@@ -15,7 +15,7 @@ class RCServo(object):
         self.movespeed = 0.1  # Seconds per 1ms pwm dutycycle change, used for move_and_disable function
 
     def move_and_disable(self, duty):
-        movetime = abs(self.dutycycle - duty) * MOVETIME_MULT
+        movetime = abs(self.dutycycle - duty) * self.movespeed
         self.move(duty)
         time.sleep(movetime)
         self.disable()
