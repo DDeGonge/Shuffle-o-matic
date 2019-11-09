@@ -10,8 +10,8 @@ class RCServo(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(servopin, GPIO.OUT)
         self.pwm = GPIO.PWM(servopin, pwm_hz)
-        self.pwm.start(0)
-        self.dutycycle = 0.
+        self.pwm.start(5)
+        self.dutycycle = 5.
         self.movespeed = 0.1  # Seconds per 1ms pwm dutycycle change, used for move_and_disable function
         self.minmovetime = 0.03
 

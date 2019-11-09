@@ -8,12 +8,15 @@ import helpers.Routines as routine
 import helpers.Config as cfg
 
 import os
+import time
 
 def main():
     s = RCServo(cfg.servo0_pwm)
-    routine.Dispense_Card(s)
 
-    
+    for _ in range(10):
+        routine.Dispense_Card(s)
+        time.sleep(0.5)
+
     del s
     return
 
