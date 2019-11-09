@@ -12,7 +12,6 @@ def Dump_Row(row):
     if (row > len(cfg.bin_heights_mm)) or (row < 0):
         raise Exception("Bin does not exist")
 
-
 def main():
     s_obj = RCServo(cfg.servo0_pwm)
     disp_obj = Dispenser()
