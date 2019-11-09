@@ -14,6 +14,10 @@ class RCServo(object):
         self.dutycycle = 0.
         self.movespeed = 0.1  # Seconds per 1ms pwm dutycycle change, used for move_and_disable function
 
+    def __del__(self):
+        self.pwm.stop()
+        GPIO.cleanup()
+
     def move_and_disable(self, duty):
         movetime = abs(self.dutycycle - duty) * self.movespeed
         self.move(duty)
@@ -27,6 +31,3 @@ class RCServo(object):
     def disable(self):
         # Don't update dutycycle because this doesn't actually move it
         self.pwm.ChangeDutyCycle(0)
-
-    def shutdown(self):
-        self.pwm.stop()
