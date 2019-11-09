@@ -27,8 +27,8 @@ b_step_per_mm = 80
 b_stepper_reverse = 1 # change to -1 to reverse direction
 
 """ OTHER VARIABLES """
-servo_min = 20
-servo_max = 80
+servo_min = 4
+servo_max = 11
 
 disp_move_mm = 120
 disp_vel_mmps = 30

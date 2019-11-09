@@ -3,7 +3,7 @@ __version__ = '0.1.0'
 import RPi.GPIO as GPIO
 import time
 
-MOVETIME_MULT = 0.01  # Seconds per 1 pwm tick, used for move_and_disable function
+MOVETIME_MULT = 0.1  # Seconds per 1ms pwm dutycycle change, used for move_and_disable function
 
 class RCServo(object):
     def __init__(self, servopin=None, pwm_hz=50):
@@ -12,8 +12,8 @@ class RCServo(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(servopin, GPIO.OUT)
         self.pwm = GPIO.PWM(servopin, pwm_hz)
+        self.pwm.start(0)
         self.dutycycle = 0.
-        self.enable()
 
     def move_and_disable(self, duty):
         movetime = abs(self.dutycycle - duty) * MOVETIME_MULT
@@ -27,10 +27,10 @@ class RCServo(object):
 
     def enable(self, duty=None):
         if duty is None:
-            self.pwm.start(self.dutycycle)
+            self.pwm.ChangeDutyCycle(self.dutycycle)
         else:
             self.dutycycle = duty
-            self.pwm.start(duty)
+            self.pwm.ChangeDutyCycle(duty)
 
     def disable(self):
-        self.pwm.stop()
+        self.pwm.ChangeDutyCycle(0)
