@@ -19,6 +19,12 @@ class RCServo(object):
         self.pwm.stop()
         GPIO.cleanup()
 
+    def dispense_card(self):
+        self.move_and_disable(cfg.servo_max)
+        self.slow_move_and_disable(cfg.servo_min, cfg.servo_speed_rps)
+        time.sleep(cfg.servo_dwell_s)
+        self.move_and_disable(cfg.servo_max)
+
     def move_and_disable(self, duty):
         movetime = abs(self.dutycycle - duty) * self.movespeed
         if movetime == 0:

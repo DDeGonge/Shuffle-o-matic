@@ -24,6 +24,9 @@ class Motor:
         self.error = 0.
         self.invert = invert
 
+    def __del__(self):
+        GPIO.cleanup()
+
     def home(self):
         self.relative_move(-300)
         if self.is_homed:

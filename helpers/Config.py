@@ -27,12 +27,20 @@ b_step_per_mm = 80
 b_stepper_reverse = 1  # change to -1 to reverse direction
 
 """ OTHER VARIABLES """
-servo_min = 3.5
-servo_max = 10.5
+# Pins
+servo_min = 4
+servo_max = 10
 
 # Dispense Parameters
 servo_speed_rps = 0.75
 servo_dwell_s = 0.1
+
+# Shuffle Parameters
+cards_per_shuffle_loop = 30  # Too many and it may fail to dispense cards
+shuffle_loops = 3
+max_cards_per_bin = 20
+
+# Other Junk
 
 disp_move_mm = 120
 disp_vel_mmps = 30
