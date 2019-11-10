@@ -2,6 +2,7 @@ __version__ = '0.1.0'
 
 import RPi.GPIO as GPIO
 import time
+import helpers.Config as cfg
 
 class RCServo(object):
     def __init__(self, servopin=None, pwm_hz=50):
