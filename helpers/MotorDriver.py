@@ -81,7 +81,7 @@ class Motor:
         return True
 
     def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
-         return self.relative_move(position_mm - self.pos_mm, velocity_mmps, accel_mmps2)
+         return self.relative_move(distance_mm - self.pos_mm, velocity_mmps, accel_mmps2)
 
     @property
     def is_homed(self):
