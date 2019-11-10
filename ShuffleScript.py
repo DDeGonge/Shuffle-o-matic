@@ -56,7 +56,7 @@ def run_shuffle(servo, d_motor, p_motor, b_motor):
             servo.dispense_card()
 
         # Then return cards to bin
-        for bin_index in cfg.bin_heights_load_mm:
+        for bin_index in reversed(cfg.bin_heights_load_mm):
             b_motor.unload_bin_pos(bin_index)
             p_motor.run()
     # TODO disable dispenser motor
