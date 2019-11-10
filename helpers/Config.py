@@ -28,7 +28,7 @@ b_stepper_reverse = 1  # change to -1 to reverse direction
 
 """ OTHER VARIABLES """
 # Pins
-servo_min = 4
+servo_min = 4.5
 servo_max = 10
 
 # Dispense Parameters

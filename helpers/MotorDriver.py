@@ -8,7 +8,7 @@ import math
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-DEBUG = False
+DEBUG = True
 
 class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
@@ -154,4 +154,4 @@ class Bins(Motor):
         self.absolute_move(cfg.bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
     def unload_bin_pos(self, bin_num):
-        self.absolute_move(cfg.bin_heights_unload_mm[bin_num] + cfg.bin_unload_shift_mm, cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
+        self.absolute_move(cfg.bin_heights_load_mm[bin_num] + cfg.bin_unload_shift_mm, cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
