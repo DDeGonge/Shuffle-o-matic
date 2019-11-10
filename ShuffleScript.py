@@ -11,13 +11,18 @@ import os
 import time
 
 def testloop():
-    s = RCServo(cfg.servo0_pwm)
+    servo = RCServo(cfg.servo0_pwm)
+    d_motor = Dispenser()
+    p_motor = Pusher()
+    b_motor = Bins()
 
-    for _ in range(10):
-        routine.Dispense_Card(s)
-        time.sleep(0.5)
+    run_shuffle(servo, d_motor, p_motor, b_motor)
 
-    del s
+    del servo
+    del d_motor
+    del p_motor
+    del b_motor
+
     return
 
 def main():
@@ -46,6 +51,7 @@ def run_shuffle(servo, d_motor, p_motor, b_motor):
         for _ in range(cfg.cards_per_shuffle_loop):
             bin_index = random.randint(0, len(cfg.bin_heights_load_mm)-1)
             # TODO add logic to detect bin overflow
+            print("Bin",bin_index)
             b_motor.load_bin_pos(bin_index)
             servo.dispense_card()
 
@@ -57,5 +63,5 @@ def run_shuffle(servo, d_motor, p_motor, b_motor):
     d_motor.raise_stage()
 
 if __name__ == "__main__":
-    # testloop()
-    main()
+    testloop()
+    # main()

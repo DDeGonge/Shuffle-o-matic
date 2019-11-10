@@ -2,7 +2,7 @@ __version__ = '0.1.0'
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-import CardDetector.CardDetector.Cards as Cards
+import CardDetector.Cards as Cards
 import time
 import os
 import cv2

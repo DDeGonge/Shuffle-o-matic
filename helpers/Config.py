@@ -36,7 +36,7 @@ servo_speed_rps = 0.75
 servo_dwell_s = 0.1
 
 # Shuffle Parameters
-cards_per_shuffle_loop = 30  # Too many and it may fail to dispense cards
+cards_per_shuffle_loop = 30  # Too many and it may fail to dispense
 shuffle_loops = 3
 max_cards_per_bin = 20
 

@@ -8,7 +8,7 @@ import math
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-DEBUG = True
+DEBUG = False
 
 class Motor:
     def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
@@ -36,6 +36,9 @@ class Motor:
         	raise('Error: Failed to home')
         print('homed')
 
+    def zero(self):
+        self.ticks = 0
+
     def update_defaults(self, vel, acc):
         self.def_vel = vel
         self.def_acc = acc
@@ -60,7 +63,7 @@ class Motor:
         steps = self._calc_steps(distance_mm)
         move_delays = self._calc_move(steps, velocity_mmps, accel_mmps2)
 
-        #if DEBUG: print(move_delays)
+        # if DEBUG: print(move_delays)
 
         # Execute move
         movestart = time.time()
@@ -116,7 +119,6 @@ class Dispenser(Motor):
                         stepspermm = cfg.d_step_per_mm,
                         invert = cfg.d_stepper_reverse)
         self.update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
-        #self.home()
 
     def raise_stage(self):
         self.absolute_move(cfg.disp_move_mm, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
@@ -133,7 +135,6 @@ class Pusher(Motor):
                         stepspermm = cfg.p_step_per_mm,
                         invert = cfg.p_stepper_reverse)
         self.update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
-        #self.home()
 
     def run(self):
         self.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
@@ -148,7 +149,6 @@ class Bins(Motor):
                         stepspermm = cfg.b_step_per_mm,
                         invert = cfg.b_stepper_reverse)
         self.update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
-        #self.home()
 
     def load_bin_pos(self, bin_num):
         self.absolute_move(cfg.bin_heights_load_mm[bin_num], cfg.bin_vel_mmps, cfg.bin_acc_mmps2)

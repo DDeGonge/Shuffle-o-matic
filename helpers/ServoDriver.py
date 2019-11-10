@@ -60,5 +60,5 @@ class RCServo(object):
         self.dutycycle = duty
 
     def disable(self):
-        # Don't update dutycycle because this doesn't actually move it
+        # Don't update self.dutycycle because this doesn't actually move it
         self.pwm.ChangeDutyCycle(0)
