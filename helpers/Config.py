@@ -2,7 +2,8 @@
 servo0_pwm = 18 # PI pin 12
 
 """ DC MOTOR PINS """
-motor0_enable = 0
+motor0_enable = 23
+motor0_sense = 0
 
 """ STEPPER """
 # Dispense stepper
