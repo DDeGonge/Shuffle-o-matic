@@ -17,7 +17,7 @@ class DCMotor(object):
         GPIO.cleanup()
 
     def enable(self):
-        GPIO.output(self.motorpin, GPIO.LOW)
+        GPIO.output(self.motorpin, GPIO.HIGH)
 
     def disable(self):
-        GPIO.output(self.motorpin, GPIO.HIGH)
+        GPIO.output(self.motorpin, GPIO.LOW)
