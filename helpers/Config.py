@@ -1,33 +1,8 @@
-""" SERVO PINS """
-servo0_pwm = 18 # PI pin 12
-
-""" DC MOTOR PINS """
-motor0_enable = 23
-motor0_sense = 0
-
-""" STEPPER """
-# Dispense stepper
-d_stepper_dir = 17
-d_stepper_step = 27
-d_stepper_lim = 22
-d_step_per_mm = 80
-d_stepper_reverse = 1  # change to -1 to reverse direction
-
-# Pusher stepper
-p_stepper_dir = 5
-p_stepper_step = 6
-p_stepper_lim = 13
-p_step_per_mm = 80
-p_stepper_reverse = 1  # change to -1 to reverse direction
-
-# Bins stepper
-b_stepper_dir = 16
-b_stepper_step = 20
-b_stepper_lim = 21
+# Stepper parameters
 b_step_per_mm = 80
-b_stepper_reverse = 1  # change to -1 to reverse direction
+d_step_per_mm = 80
+p_step_per_mm = 80
 
-""" OTHER VARIABLES """
 # Pins
 servo_min = 4.5
 servo_max = 10
@@ -37,22 +12,22 @@ servo_speed_rps = 0.75
 servo_dwell_s = 0.2
 
 # Shuffle Parameters
-cards_per_shuffle_loop = 10  # Too many and it may fail to dispense
-shuffle_loops = 3
+cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
+shuffle_loops = 4
 max_cards_per_bin = 20
 
 # Other Junk
-
 disp_move_mm = 120
 disp_vel_mmps = 30
 disp_acc_mmps2 = 100
 
-pusher_move_mm = 120
-pusher_vel_mmps = 30
-pusher_acc_mmps2 = 100
+pusher_move_mm = 66
+pusher_vel_mmps = 500
+pusher_acc_mmps2 = 10000
 
 step_len_s = 0.000001  # 1us is normal
-bin_vel_mmps = 90
-bin_acc_mmps2 = 500
-bin_heights_load_mm = [10,20,30,40,50,60,70]  # bin 0 (bottom) to bin n (top)
-bin_unload_shift_mm = 50  # bin 0 (bottom) to bin n (top)
+bin_vel_mmps = 400
+bin_acc_mmps2 = 4000
+# bin_heights_load_mm = [0.1, 6, 13.5, 21, 28.5, 36, 43.5, 52]  # bin 0 (bottom) to bin n (top)
+bin_heights_load_mm = [0.1, 7, 15, 23, 31, 39, 47]
+bin_unload_shift_mm = 36  # bin 0 (bottom) to bin n (top)

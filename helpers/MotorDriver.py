@@ -1,31 +1,18 @@
 __version__ = '0.1.0'
 
-import RPi.GPIO as GPIO
 import helpers.Config as cfg
 import time
 import math
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 DEBUG = True
 
 class Motor:
-    def __init__(self, step_pin, dir_pin, limit_pin, stepspermm, invert):
-        self.ticks = 0
-        self.steppin = step_pin
-        self.dirpin = dir_pin
-        self.limit_pin = limit_pin
-        GPIO.setup(self.steppin, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(self.dirpin, GPIO.OUT, initial=GPIO.HIGH)
-        GPIO.setup(self.limit_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(self.limit_pin, GPIO.RISING)
+    def __init__(self, serial_device, stepspermm, stepper_index):
         self.steps_per_mm = stepspermm
+        self.serial_device = serial_device
+        self.stepper_index = stepper_index
         self.error = 0.
-        self.invert = invert
-
-    def __del__(self):
-        GPIO.cleanup()
+        self.configure()
 
     def home(self):
         self.relative_move(-300)
@@ -37,59 +24,46 @@ class Motor:
         print('homed')
 
     def zero(self):
-        self.ticks = 0
+        self.serial_device.command('z,' + str(self.stepper_index) + ',0')
+
+    def enable(self):
+        self.serial_device.command('s,' + str(self.stepper_index))
+
+    def disable(self):
+        self.serial_device.command('x,' + str(self.stepper_index))
 
     def update_defaults(self, vel, acc):
         self.def_vel = vel
         self.def_acc = acc
 
-    def relative_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
+    def configure(self, steps_per_mm=None):
+        if not steps_per_mm:
+            steps_per_mm = self.steps_per_mm
+
+        self.serial_device.command('f,' + str(self.stepper_index) + ',' + str(1000 * steps_per_mm))
+
+    def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
         # Pull defaults if vel or acc not specified
         if velocity_mmps is None:
             velocity_mmps = self.def_vel
         if accel_mmps2 is None:
             accel_mmps2 = self.def_acc
 
-        # Set direction
-        if (self.invert * distance_mm) < 0:
-            GPIO.output(self.dirpin, GPIO.HIGH)
-            distance_mm *= -1
-            stepdir = -1
-        else:
-            GPIO.output(self.dirpin, GPIO.LOW)
-            stepdir = 1
-
         # Calculate move
-        steps = self._calc_steps(distance_mm)
-        move_delays = self._calc_move(steps, velocity_mmps, accel_mmps2)
+        command = 'm,' + str(self.stepper_index) + ',' + str(self._calc_steps(distance_mm)) + ',' + str(velocity_mmps) + ',' + str(accel_mmps2)
+        self.serial_device.command(command)
 
-        # if DEBUG: print(move_delays)
-
-        # Execute move
-        movestart = time.time()
-        nextstep = movestart
-        for stepdel in move_delays:
-            nextstep += stepdel
-            if GPIO.event_detected(self.limit_pin):
-            	return False
-            while time.time() < nextstep:
-                pass
-            self._step()
-            self.ticks += stepdir
-        if DEBUG: print('movetime:',time.time() - movestart)
-        if DEBUG: print('position:',self.pos_mm)
-        return True
-
-    def absolute_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
-         return self.relative_move(distance_mm - self.pos_mm, velocity_mmps, accel_mmps2)
+    def relative_move(self, distance_mm, velocity_mmps=None, accel_mmps2=None):
+         return self.absolute_move(self.pos_mm + distance_mm, velocity_mmps, accel_mmps2)
 
     @property
     def is_homed(self):
-        return GPIO.input(self.limit_pin)
+        return True
 
     @property
     def pos_mm(self):
-        return self.ticks / self.steps_per_mm
+        resp = self.serial_device.command('p').strip('\n').split(',')
+        return int(resp[self.stepper_index + 1]) / self.steps_per_mm
 
     def _calc_steps(self, dist_mm):
         steps_tot = (dist_mm + self.error) * self.steps_per_mm
@@ -97,27 +71,9 @@ class Motor:
         self.error = steps_tot - steps
         return steps
 
-    def _calc_move(self, steps, vel_mmps, acc_mmps2):
-        vel_delay_s = (1 / (vel_mmps * self.steps_per_mm))
-        return [vel_delay_s]*steps
-
-        # TODO create acceleration and jerk ramping
-        acc_delay_ms = (1 / (acc_mmps2 * self.steps_per_mm))
-        ramp = range(vel_delay_ms, 5000, acc_delay_ms)
-        movebuffer = []
-
-    def _step(self):
-        GPIO.output(self.steppin, GPIO.HIGH)
-        time.sleep(cfg.step_len_s)
-        GPIO.output(self.steppin, GPIO.HIGH)
-
-class Dispenser(Motor):
-    def __init__(self):
-        super().__init__(step_pin = cfg.d_stepper_step,
-                        dir_pin = cfg.d_stepper_dir,
-                        limit_pin = cfg.d_stepper_lim,
-                        stepspermm = cfg.d_step_per_mm,
-                        invert = cfg.d_stepper_reverse)
+class DispenseStep(Motor):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs, stepspermm = cfg.d_step_per_mm, stepper_index = 2)
         self.update_defaults(cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
 
     def raise_stage(self):
@@ -127,13 +83,9 @@ class Dispenser(Motor):
         self.absolute_move(0.2, cfg.disp_vel_mmps, cfg.disp_acc_mmps2)
 
 
-class Pusher(Motor):
-    def __init__(self):
-        super().__init__(step_pin = cfg.p_stepper_step,
-                        dir_pin = cfg.p_stepper_dir,
-                        limit_pin = cfg.p_stepper_lim,
-                        stepspermm = cfg.p_step_per_mm,
-                        invert = cfg.p_stepper_reverse)
+class PushStep(Motor):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs, stepspermm = cfg.p_step_per_mm, stepper_index = 1)
         self.update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
     def run(self):
@@ -141,13 +93,9 @@ class Pusher(Motor):
         self.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
 
-class Bins(Motor):
-    def __init__(self):
-        super().__init__(step_pin = cfg.b_stepper_step,
-                        dir_pin = cfg.b_stepper_dir,
-                        limit_pin = cfg.b_stepper_lim,
-                        stepspermm = cfg.b_step_per_mm,
-                        invert = cfg.b_stepper_reverse)
+class BinStep(Motor):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs, stepspermm = cfg.b_step_per_mm, stepper_index = 0)
         self.update_defaults(cfg.bin_vel_mmps, cfg.bin_acc_mmps2)
 
     def load_bin_pos(self, bin_num):

@@ -1,8 +1,9 @@
 __version__ = '0.1.0'
 
-from helpers.MotorDriver import Dispenser, Pusher, Bins
-from helpers.ServoDriver import RCServo
-from helpers.DCMotorDriver import DCMotor
+from helpers.MotorDriver import DispenseStep, PushStep, BinStep
+from helpers.SerialDevice import SerialDevice
+from helpers.DispenserDriver import Dispenser
+# from helpers.DCMotorDriver import DCMotor
 #from helpers.CameraDriver import Camera
 
 import helpers.Config as cfg
@@ -11,62 +12,61 @@ import random
 import os
 import time
 
-def testloop():
-    servo = RCServo(cfg.servo0_pwm)
-    disp_motor = DCMotor(cfg.motor0_enable)
-    d_motor = Dispenser()
-    p_motor = Pusher()
-    b_motor = Bins()
 
-    run_shuffle(servo, disp_motor, d_motor, p_motor, b_motor)
-
-    del servo
-    del d_motor
-    del p_motor
-    del b_motor
-
-    return
 
 def main():
-    servo = RCServo(cfg.servo0_pwm)
-    disp_motor = DCMotor(cfg.motor0_enable)
-    d_motor = Dispenser()
-    p_motor = Pusher()
-    b_motor = Bins()
-
-    # TODO Home all motors here
+    sd = SerialDevice()
+    d_motor = DispenseStep(serial_device=sd)
+    p_motor = PushStep(serial_device=sd)
+    b_motor = BinStep(serial_device=sd)
+    dispenser = Dispenser(serial_device=sd)
 
     try:
-        run_shuffle(servo, disp_motor, d_motor, p_motor, b_motor)
-    except KeyboardInterrupt:
-        del servo
-        del d_motor
-        del p_motor
-        del b_motor
+        run_shuffle(d_motor, p_motor, b_motor, dispenser)
+    finally:
+        d_motor.disable()
+        p_motor.disable()
 
     return
 
-def run_shuffle(servo:RCServo, disp_motor:DCMotor, d_motor:Dispenser, p_motor:Pusher, b_motor:Bins):
-    d_motor.lower_stage()
+def testloop():
+    sd = SerialDevice()
+    d_motor = DispenseStep(serial_device=sd)
+    p_motor = PushStep(serial_device=sd)
+    b_motor = BinStep(serial_device=sd)
+    dispenser = Dispenser(serial_device=sd)
+
+    return
+
+def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
+    b_motor.enable()
+    p_motor.disable()
+    b_motor.zero()
+    p_motor.zero()
+    # d_motor.lower_stage()
     for _ in range(cfg.shuffle_loops):
-        # First distribute cards
-        disp_motor.enable()
+        dispenser.enable_motor()
+        dispenser.baseline_motor_cur()
         for _ in range(cfg.cards_per_shuffle_loop):
             bin_index = random.randint(0, len(cfg.bin_heights_load_mm)-1)
             # TODO add logic to detect bin overflow
             print("Bin",bin_index)
             b_motor.load_bin_pos(bin_index)
-            servo.dispense_card()
-        disp_motor.disable()
+            if not dispenser.dispense_card():
+                raise Exception("Card Jam")
+        dispenser.disable_motor()
 
         # Then return cards to bin
         nBins = len(cfg.bin_heights_load_mm)
+        p_motor.enable()
         for bin_index in reversed(range(nBins)):
             b_motor.unload_bin_pos(bin_index)
             p_motor.run()
+        p_motor.disable()
     # TODO disable dispenser motor
-    d_motor.raise_stage()
+    # d_motor.raise_stage()
+    b_motor.disable()
 
 if __name__ == "__main__":
-    testloop()
-    # main()
+    # testloop()
+    main()
