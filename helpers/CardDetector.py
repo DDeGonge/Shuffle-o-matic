@@ -45,8 +45,11 @@ def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
     c = Card
     img_cropped = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
-    Qrank = img_cropped[:H_SPLIT, :]
-    Qsuit = img_cropped[H_SPLIT:, :]
+    Qrank = img_cropped[:cfg.H_SPLIT, :]
+    Qsuit = img_cropped[cfg.H_SPLIT:, :]
+
+    print(Qrank)
+    print(Qsuit)
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
