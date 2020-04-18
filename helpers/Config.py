@@ -30,7 +30,7 @@ disp_move_mm = 120
 disp_vel_mmps = 30
 disp_acc_mmps2 = 100
 
-pusher_move_mm = 66
+pusher_move_mm = 68
 pusher_vel_mmps = 500
 pusher_acc_mmps2 = 10000
 

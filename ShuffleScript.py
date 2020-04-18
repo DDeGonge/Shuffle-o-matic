@@ -4,7 +4,7 @@ from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
 # from helpers.DCMotorDriver import DCMotor
-#from helpers.CameraDriver import Camera
+from helpers.CameraDriver import Camera
 
 import helpers.Config as cfg
 
@@ -29,7 +29,7 @@ def main():
 
     return
 
-def testloop():
+def motor_test():
     sd = SerialDevice()
     d_motor = DispenseStep(serial_device=sd)
     p_motor = PushStep(serial_device=sd)
@@ -45,6 +45,11 @@ def testloop():
     p_motor.disable()
 
     return
+
+def cam_test():
+    c = Camera()
+    card = c.read_card()
+    print(card)
 
 def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
     b_motor.enable()
@@ -76,5 +81,6 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
     b_motor.disable()
 
 if __name__ == "__main__":
-    testloop()
+    # motor_test()
     # main()
+    cam_test()
