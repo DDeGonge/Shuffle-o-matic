@@ -14,6 +14,16 @@ class Card(object):
     rank_img = None
     suit_img = None
 
+class Train_ranks:
+    def __init__(self):
+        self.img = [] # Thresholded, sized rank image loaded from hard drive
+        self.name = "Placeholder"
+
+class Train_suits:
+    def __init__(self):
+        self.img = [] # Thresholded, sized suit image loaded from hard drive
+        self.name = "Placeholder"
+
 def Identify_Card(img, train_ranks, train_suits):
     # First process image
     processed_img = preprocess_image(img)
