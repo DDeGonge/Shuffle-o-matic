@@ -19,7 +19,7 @@ class Camera(object):
 
     def read_card(self):
         image = self._capture_image()
-        card = Cards.Identify_Card(image)
+        card = Cards.Identify_Card(image, self.train_ranks, self.train_suits)
         print(card)
         return card
 
