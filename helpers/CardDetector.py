@@ -1,4 +1,5 @@
 import helpers.Config as cfg
+import numpy as np
 import cv2
 
 RANK_DIFF_MAX = 2000
