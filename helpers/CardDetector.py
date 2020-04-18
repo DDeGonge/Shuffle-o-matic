@@ -44,7 +44,7 @@ def preprocess_image(img):
 def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
     c = Card
-    img_cropped = proc_img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
+    img_cropped = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
     Qrank = img_cropped[:H_SPLIT, :]
     Qsuit = img_cropped[H_SPLIT:, :]
 
