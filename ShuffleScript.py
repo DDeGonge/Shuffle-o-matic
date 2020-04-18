@@ -36,6 +36,14 @@ def testloop():
     b_motor = BinStep(serial_device=sd)
     dispenser = Dispenser(serial_device=sd)
 
+    p_motor.enable()
+    p_motor.zero()
+    v = 520
+    a = 12000
+    p_motor.relative_move(68, v, a)
+    p_motor.relative_move(-68, v, a)
+    p_motor.disable()
+
     return
 
 def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
@@ -68,5 +76,5 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
     b_motor.disable()
 
 if __name__ == "__main__":
-    # testloop()
-    main()
+    testloop()
+    # main()

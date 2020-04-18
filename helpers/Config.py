@@ -16,6 +16,15 @@ cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
 shuffle_loops = 4
 max_cards_per_bin = 20
 
+# Camera Parameters
+# Cropped region of card window
+H_MIN = 100
+H_MAX = 800
+W_MIN = 100
+W_MAX = 800
+# Split line between card number and suit, from top
+H_SPLIT = 50
+
 # Other Junk
 disp_move_mm = 120
 disp_vel_mmps = 30

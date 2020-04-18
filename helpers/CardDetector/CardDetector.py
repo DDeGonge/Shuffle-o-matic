@@ -1,108 +1,142 @@
-############## Python-OpenCV Playing Card Detector ###############
-#
-# Author: Evan Juras
-# Date: 9/5/17
-# Description: Python script to detect and identify playing cards
-# from a PiCamera video feed.
-#
-
-# Import necessary packages
+import helpers.Config as cfg
 import cv2
-import numpy as np
-import time
-import os
-import Cards
-import VideoStream
 
+RANK_DIFF_MAX = 2000
+SUIT_DIFF_MAX = 700
+RANK_WIDTH = 70
+RANK_HEIGHT = 125
+SUIT_WIDTH = 70
+SUIT_HEIGHT = 100
 
-### ---- INITIALIZATION ---- ###
-# Define constants and initialize variables
+class Card(object):
+    rank = None
+    suit = None
+    rank_img = None
+    suit_img = None
 
-## Camera settings
-IM_WIDTH = 1280
-IM_HEIGHT = 720 
-FRAME_RATE = 10
+def Identify_Card(img, train_ranks, train_suits):
+    # First process image
+    processed_img = preprocess_image(img)
+    c = get_card_with_cropped_imgs(processed_img)
+    c = match_card(c, train_ranks, train_suits)
+    return c
 
-## Initialize calculated frame rate because it's calculated AFTER the first time it's displayed
-frame_rate_calc = 1
-freq = cv2.getTickFrequency()
+def preprocess_image(img):
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray,(5,5),0)
+    img_w, img_h = np.shape(img)[:2]
+    bkg_level = gray[int(img_h/100)][int(img_w/2)]
+    thresh_level = bkg_level + 60
+    _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
+    return proc_img
 
-## Define font to use
-font = cv2.FONT_HERSHEY_SIMPLEX
+def get_card_with_cropped_imgs(img):
+    # Then crop out rank and suit
+    c = Card
+    img_cropped = proc_img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
+    Qrank = img_cropped[:H_SPLIT, :]
+    Qsuit = img_cropped[H_SPLIT:, :]
 
-# Initialize camera object and video feed from the camera. The video stream is set up
-# as a seperate thread that constantly grabs frames from the camera feed. 
-# See VideoStream.py for VideoStream class definition
-## IF USING USB CAMERA INSTEAD OF PICAMERA,
-## CHANGE THE THIRD ARGUMENT FROM 1 TO 2 IN THE FOLLOWING LINE:
-videostream = VideoStream.VideoStream((IM_WIDTH,IM_HEIGHT),FRAME_RATE,1,0).start()
-time.sleep(1) # Give the camera time to warm up
+    # Find rank contour and bounding rectangle, isolate and find largest contour
+    dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea,reverse=True)
+    if len(Qrank_cnts) != 0:
+        x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
+        Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
+        Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), 0, 0)
+        c.rank_img = Qrank_sized
 
-# Load the train rank and suit images
-path = os.path.dirname(os.path.abspath(__file__))
-train_ranks = Cards.load_ranks( path + '/Card_Imgs/')
-train_suits = Cards.load_suits( path + '/Card_Imgs/')
+    # Find suit contour and bounding rectangle, isolate and find largest contour
+    dummy, Qsuit_cnts, hier = cv2.findContours(Qsuit, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    Qsuit_cnts = sorted(Qsuit_cnts, key=cv2.contourArea,reverse=True)
+    if len(Qsuit_cnts) != 0:
+        x2,y2,w2,h2 = cv2.boundingRect(Qsuit_cnts[0])
+        Qsuit_roi = Qsuit[y2:y2+h2, x2:x2+w2]
+        Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), 0, 0)
+        c.suit_img = Qsuit_sized
 
+    return c
 
-### ---- MAIN LOOP ---- ###
-# The main loop repeatedly grabs frames from the video stream
-# and processes them to find and identify playing cards.
+def match_card(qCard, train_ranks, train_suits):
+    """Finds best rank and suit matches for the query card. Differences
+    the query card rank and suit images with the train rank and suit images.
+    The best match is the rank or suit image that has the least difference."""
 
-cam_quit = 0 # Loop control variable
+    best_rank_match_diff = 10000
+    best_suit_match_diff = 10000
+    best_rank_match_name = "Unknown"
+    best_suit_match_name = "Unknown"
+    i = 0
 
-# Begin capturing frames
-while cam_quit == 0:
-
-    # Grab frame from video stream
-    image = videostream.read()
-
-    # Start timer (for calculating frame rate)
-    t1 = cv2.getTickCount()
-
-    # Pre-process camera image (gray, blur, and threshold it)
-    pre_proc = Cards.preprocess_image(image)
-	
-    # Find and sort the contours of all cards in the image (query cards)
-    cnts_sort, cnt_is_card = Cards.find_cards(pre_proc)
-
-    # If there are no contours, do nothing
-    if len(cnts_sort) != 0:
-
-        # Initialize a new "cards" list to assign the card objects.
-        # k indexes the newly made array of cards.
-        cards = []
-        k = 0
-
-        # For each contour detected:
-        for i in range(len(cnts_sort)):
-            if (cnt_is_card[i] == 1):
-
-                # Create a card object from the contour and append it to the list of cards.
-                # preprocess_card function takes the card contour and contour and
-                # determines the cards properties (corner points, etc). It generates a
-                # flattened 200x300 image of the card, and isolates the card's
-                # suit and rank from the image.
-                cards.append(Cards.preprocess_card(cnts_sort[i],image))
-
-                # Find the best rank and suit match for the card.
-                cards[k].best_rank_match,cards[k].best_suit_match,cards[k].rank_diff,cards[k].suit_diff = Cards.match_card(cards[k],train_ranks,train_suits)
-                print(cards[k].best_rank_match, cards[k].best_suit_match)
-
-                k = k + 1
-
+    # If no contours were found in query card in preprocess_card function,
+    # the img size is zero, so skip the differencing process
+    # (card will be left as Unknown)
+    if (len(qCard.rank_img) != 0) and (len(qCard.suit_img) != 0):
         
-    # Calculate framerate
-    t2 = cv2.getTickCount()
-    time1 = (t2-t1)/freq
-    frame_rate_calc = 1/time1
+        # Difference the query card rank image from each of the train rank images,
+        # and store the result with the least difference
+        for Trank in train_ranks:
+
+                diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
+                rank_diff = int(np.sum(diff_img)/255)
+                
+                if rank_diff < best_rank_match_diff:
+                    best_rank_diff_img = diff_img
+                    best_rank_match_diff = rank_diff
+                    best_rank_name = Trank.name
+
+        # Same process with suit images
+        for Tsuit in train_suits:
+                
+                diff_img = cv2.absdiff(qCard.suit_img, Tsuit.img)
+                suit_diff = int(np.sum(diff_img)/255)
+                
+                if suit_diff < best_suit_match_diff:
+                    best_suit_diff_img = diff_img
+                    best_suit_match_diff = suit_diff
+                    best_suit_name = Tsuit.name
+
+    # Combine best rank match and best suit match to get query card's identity.
+    # If the best matches have too high of a difference value, card identity
+    # is still Unknown
+    if (best_rank_match_diff < RANK_DIFF_MAX):
+        qCard.rank = best_rank_name
+
+    if (best_suit_match_diff < SUIT_DIFF_MAX):
+        qCard.suit = best_suit_name
+
+    # Return the identiy of the card and the quality of the suit and rank match
+    return qCard
+
+def load_ranks(filepath):
+    """Loads rank images from directory specified by filepath. Stores
+    them in a list of Train_ranks objects."""
+
+    train_ranks = []
+    i = 0
     
-    # Poll the keyboard. If 'q' is pressed, exit the main loop.
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        cam_quit = 1
-        
+    for Rank in ['Ace','Two','Three','Four','Five','Six','Seven',
+                 'Eight','Nine','Ten','Jack','Queen','King']:
+        train_ranks.append(Train_ranks())
+        train_ranks[i].name = Rank
+        filename = Rank + '.jpg'
+        train_ranks[i].img = cv2.imread(filepath+filename, cv2.IMREAD_GRAYSCALE)
+        i = i + 1
 
-# Close all windows and close the PiCamera video stream.
-cv2.destroyAllWindows()
-videostream.stop()
+    return train_ranks
 
+def load_suits(filepath):
+    """Loads suit images from directory specified by filepath. Stores
+    them in a list of Train_suits objects."""
+
+    train_suits = []
+    i = 0
+    
+    for Suit in ['Spades','Diamonds','Clubs','Hearts']:
+        train_suits.append(Train_suits())
+        train_suits[i].name = Suit
+        filename = Suit + '.jpg'
+        train_suits[i].img = cv2.imread(filepath+filename, cv2.IMREAD_GRAYSCALE)
+        i = i + 1
+
+    return train_suits
