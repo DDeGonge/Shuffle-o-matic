@@ -10,7 +10,7 @@ import cv2
 
 class Camera(object):
     # TRAINING VALS
-    TRAIN_PATH = os.path.join('CardDetector','Card_Imgs')
+    TRAIN_PATH = 'Card_Imgs'
     def __init__(self, resolution=(1280,720)):
         self.camera = None
         self.rawCapture = None
