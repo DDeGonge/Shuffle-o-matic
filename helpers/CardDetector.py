@@ -55,12 +55,15 @@ def get_card_with_cropped_imgs(img):
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
-    dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea,reverse=True)
+    Qrank_cnts, _ = cv2.findContours(Qrank, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea, reverse=True)
+    print(Qrank_cnts)
     if len(Qrank_cnts) != 0:
         debug_save_img(Qrank, 'pre_bb.jpg')
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
+        print(Qrank[0].shape)
+        print(Qrank_cnts[0].shape)
         print(x1, y1, w1, h1)
         debug_save_img(Qrank, 'post_bb.jpg')
         Qrank_roi = cv2.bitwise_not(Qrank_roi)
@@ -68,7 +71,7 @@ def get_card_with_cropped_imgs(img):
         c.rank_img = Qrank_sized
 
     # Find suit contour and bounding rectangle, isolate and find largest contour
-    dummy, Qsuit_cnts, hier = cv2.findContours(Qsuit, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    _, Qsuit_cnts, _ = cv2.findContours(Qsuit, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     Qsuit_cnts = sorted(Qsuit_cnts, key=cv2.contourArea,reverse=True)
     if len(Qsuit_cnts) != 0:
         x2,y2,w2,h2 = cv2.boundingRect(Qsuit_cnts[0])
