@@ -98,8 +98,6 @@ def match_card(qCard, train_ranks, train_suits):
         # Difference the query card rank image from each of the train rank images,
         # and store the result with the least difference
         for Trank in train_ranks:
-
-                print(qCard.rank_img.shape, Trank.img.shape)
                 diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
                 rank_diff = int(np.sum(diff_img)/255)
                 
@@ -110,7 +108,6 @@ def match_card(qCard, train_ranks, train_suits):
 
         # Same process with suit images
         for Tsuit in train_suits:
-                
                 diff_img = cv2.absdiff(qCard.suit_img, Tsuit.img)
                 suit_diff = int(np.sum(diff_img)/255)
                 
@@ -143,7 +140,7 @@ def load_ranks(filepath):
         train_ranks.append(Train_ranks())
         train_ranks[i].name = Rank
         filename = Rank + '.jpg'
-        train_ranks[i].img = cv2.imread(filepath+filename, cv2.IMREAD_GRAYSCALE)
+        train_ranks[i].img = cv2.imread(os.path.join(filepath, filename), cv2.IMREAD_GRAYSCALE)
         i = i + 1
 
     return train_ranks
@@ -159,7 +156,7 @@ def load_suits(filepath):
         train_suits.append(Train_suits())
         train_suits[i].name = Suit
         filename = Suit + '.jpg'
-        train_suits[i].img = cv2.imread(filepath+filename, cv2.IMREAD_GRAYSCALE)
+        train_suits[i].img = cv2.imread(os.path.join(filepath, filename), cv2.IMREAD_GRAYSCALE)
         i = i + 1
 
     return train_suits
