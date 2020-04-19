@@ -46,8 +46,9 @@ def motor_test():
 
 def cam_test():
     c = Camera()
-    card = c.read_card()
-    print(card)
+    while True:
+        card = c.read_card()
+        print(card.rank, card.suit)
 
 def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
     b_motor.enable()

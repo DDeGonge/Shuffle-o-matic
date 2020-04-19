@@ -126,6 +126,8 @@ def match_card(qCard, train_ranks, train_suits):
     if (best_suit_match_diff < SUIT_DIFF_MAX):
         qCard.suit = best_suit_name
 
+    print('rank best diff: {}\nsuit best diff: {}'.format(best_rank_match_diff, best_suit_match_diff))
+
     # Return the identiy of the card and the quality of the suit and rank match
     return qCard
 
