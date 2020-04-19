@@ -60,7 +60,8 @@ def get_card_with_cropped_imgs(img):
     Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea, reverse=True)
     if len(Qrank_cnts) != 0:
         debug_save_img(Qrank, 'pre_bb.jpg')
-        Qrank_contour = trim_contour(Qrank_cnts[0], Qrank)
+        # Qrank_contour = trim_contour(Qrank_cnts[0], Qrank)
+        Qrank_contour = Qrank_cnts[0]
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_contour)
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
         print(x1, y1, w1, h1)
@@ -85,7 +86,7 @@ def trim_contour(contour, img):
     """Removes any points from contour that aren't actually the shape"""
     ret_contour = []
     for pt in contour:
-        x = pt[0][0]
+        x = pt[0][1]
         y = pt[0][0]
         print(x,y)
         print(img[x,y])

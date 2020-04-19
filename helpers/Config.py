@@ -21,7 +21,7 @@ max_cards_per_bin = 20
 H_MIN = 245
 H_MAX = 570
 W_MIN = 475
-W_MAX = 600
+W_MAX = 650
 # Split line between card number and suit, from top
 H_SPLIT = 185
 
