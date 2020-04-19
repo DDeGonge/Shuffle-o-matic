@@ -9,7 +9,7 @@ from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
 # from helpers.DCMotorDriver import DCMotor
-from helpers.CameraDriver import Camera
+# from helpers.CameraDriver import Camera
 import helpers.Config as cfg
 
 def main():
