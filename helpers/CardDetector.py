@@ -31,6 +31,8 @@ class Train_suits(object):
 
 def Identify_Card(img, train_ranks, train_suits):
     # First process image
+    im = Image.fromarray(img)
+    im.save("/home/pi/raw.jpg")
     processed_img = preprocess_image(img)
     c = get_card_with_cropped_imgs(processed_img)
     c = match_card(c, train_ranks, train_suits)
@@ -43,8 +45,8 @@ def preprocess_image(img):
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
     thresh_level = bkg_level + 0
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
-    # return proc_img
-    return img
+    return proc_img
+    # return img
 
 def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
@@ -56,11 +58,10 @@ def get_card_with_cropped_imgs(img):
     # Temp debugging TODO remove
     print('rank\n', Qrank, '\n\n')
     print('suit\n', Qsuit, '\n\n')
+    print(Qrank.shape, Qsuit.shape)
     im = Image.fromarray(Qrank)
-    im.tile = [e for e in im.tile if e[1][2] < 2181 and e[1][3]<1294]
     im.save("/home/pi/rank.jpg")
     im = Image.fromarray(Qsuit)
-    im.tile = [e for e in im.tile if e[1][2] < 2181 and e[1][3]<1294]
     im.save("/home/pi/suit.jpg")
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
