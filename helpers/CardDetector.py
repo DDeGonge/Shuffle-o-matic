@@ -40,7 +40,7 @@ def preprocess_image(img):
     blur = cv2.GaussianBlur(gray,(5,5),0)
     img_w, img_h = np.shape(img)[:2]
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
-    thresh_level = bkg_level + 60
+    thresh_level = bkg_level + 0
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img
 
@@ -51,8 +51,12 @@ def get_card_with_cropped_imgs(img):
     Qrank = img_cropped[:cfg.H_SPLIT, :]
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
-    print(Qrank)
-    print(Qsuit)
+    # Temp debugging TODO remove
+    print('rank\n', Qrank, '\n\n')
+    print('suit\n', Qsuit, '\n\n')
+    from scipy.misc import imsave
+    imsave('~/rank.jpg', Qrank)
+    imsave('~/suit.jpg', Qsuit)
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -88,9 +92,6 @@ def match_card(qCard, train_ranks, train_suits):
     # Temp debugging TODO remove
     print('rank\n', qCard.rank_img, '\n\n')
     print('suit\n', qCard.suit_img, '\n\n')
-    import scipy.misc
-    scipy.misc.toimage(qCard.rank_img, cmin=0.0, cmax=...).save('~/rank.jpg')
-    scipy.misc.toimage(qCard.suit_img, cmin=0.0, cmax=...).save('~/suit.jpg')
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process
