@@ -7,8 +7,8 @@ from PIL import Image
 
 np.set_printoptions(threshold=sys.maxsize)
 
-RANK_DIFF_MAX = 2000
-SUIT_DIFF_MAX = 700
+RANK_DIFF_MAX = 5000
+SUIT_DIFF_MAX = 5000
 RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
