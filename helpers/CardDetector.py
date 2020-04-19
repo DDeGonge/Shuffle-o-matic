@@ -2,6 +2,7 @@ import helpers.Config as cfg
 import numpy as np
 import cv2
 import sys
+from PIL import Image
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -54,9 +55,8 @@ def get_card_with_cropped_imgs(img):
     # Temp debugging TODO remove
     print('rank\n', Qrank, '\n\n')
     print('suit\n', Qsuit, '\n\n')
-    from scipy.misc import imsave
-    imsave('~/rank.jpg', Qrank)
-    imsave('~/suit.jpg', Qsuit)
+    Image.fromarray(Qrank).save("~/rank.jpg")
+    Image.fromarray(Qsuit).save("~/suit.jpg")
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
