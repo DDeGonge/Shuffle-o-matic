@@ -58,8 +58,11 @@ def get_card_with_cropped_imgs(img):
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea,reverse=True)
     if len(Qrank_cnts) != 0:
+        debug_save_img(Qrank, 'pre_bb.jpg')
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
+        print(x1, y1, w1, h1)
+        debug_save_img(Qrank, 'post_bb.jpg')
         Qrank_roi = cv2.bitwise_not(Qrank_roi)
         Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.rank_img = Qrank_sized
@@ -86,12 +89,6 @@ def match_card(qCard, train_ranks, train_suits):
     best_rank_match_name = "Unknown"
     best_suit_match_name = "Unknown"
     i = 0
-
-    print(qCard.rank_img.shape, qCard.suit_img.shape)
-    im = Image.fromarray(qCard.rank_img)
-    im.save("/home/pi/rank.jpg")
-    im = Image.fromarray(qCard.suit_img)
-    im.save("/home/pi/suit.jpg")
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process
@@ -165,3 +162,7 @@ def load_suits(filepath):
         i = i + 1
 
     return train_suits
+
+def debug_save_img(img, imgname):
+    im = Image.fromarray(img)
+    im.save(os.path.join('/home/pi/', imgname)
