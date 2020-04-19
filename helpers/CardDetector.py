@@ -13,7 +13,7 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-BW_THRESH = 60
+BW_THRESH = 45
 
 class Card(object):
     rank = None
@@ -60,6 +60,7 @@ def get_card_with_cropped_imgs(img):
     if len(Qrank_cnts) != 0:
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
+        Qrank_roi = cv2.bitwise_not(Qrank_roi)
         Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.rank_img = Qrank_sized
 
@@ -69,6 +70,7 @@ def get_card_with_cropped_imgs(img):
     if len(Qsuit_cnts) != 0:
         x2,y2,w2,h2 = cv2.boundingRect(Qsuit_cnts[0])
         Qsuit_roi = Qsuit[y2:y2+h2, x2:x2+w2]
+        Qsuit_roi = cv2.bitwise_not(Qsuit_roi)
         Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.suit_img = Qsuit_sized
 
