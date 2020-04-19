@@ -61,7 +61,7 @@ def get_card_with_cropped_imgs(img):
     if len(Qrank_cnts) != 0:
         debug_save_img(Qrank, 'pre_bb.jpg')
         # Qrank_contour = trim_contour(Qrank_cnts[0], Qrank)
-        Qrank_contour = Qrank_cnts[0]
+        Qrank_contour = Qrank_cnts[0][3:-3]
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_contour)
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
         print(x1, y1, w1, h1)
@@ -74,25 +74,14 @@ def get_card_with_cropped_imgs(img):
     _, Qsuit_cnts, _ = cv2.findContours(Qsuit, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     Qsuit_cnts = sorted(Qsuit_cnts, key=cv2.contourArea,reverse=True)
     if len(Qsuit_cnts) != 0:
-        x2,y2,w2,h2 = cv2.boundingRect(Qsuit_cnts[0])
+        Qsuit_contour = Qsuit_cnts[0][3:-3]
+        x2,y2,w2,h2 = cv2.boundingRect(Qsuit_contour)
         Qsuit_roi = Qsuit[y2:y2+h2, x2:x2+w2]
         Qsuit_roi = cv2.bitwise_not(Qsuit_roi)
         Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.suit_img = Qsuit_sized
 
     return c
-
-def trim_contour(contour, img):
-    """Removes any points from contour that aren't actually the shape"""
-    ret_contour = []
-    for pt in contour:
-        x = pt[0][1]
-        y = pt[0][0]
-        print(x,y)
-        print(img[x,y])
-        if img[x,y] < 100:
-            ret_contour.append(pt)
-    return ret_contour
 
 def match_card(qCard, train_ranks, train_suits):
     """Finds best rank and suit matches for the query card. Differences
