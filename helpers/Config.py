@@ -18,12 +18,12 @@ max_cards_per_bin = 20
 
 # Camera Parameters
 # Cropped region of card window
-H_MIN = 700
-H_MAX = 1450
-W_MIN = 920
-W_MAX = 1220
+H_MIN = 245
+H_MAX = 570
+W_MIN = 475
+W_MAX = 600
 # Split line between card number and suit, from top
-H_SPLIT = 415
+H_SPLIT = 185
 
 # Other Junk
 disp_move_mm = 120
