@@ -165,4 +165,4 @@ def load_suits(filepath):
 
 def debug_save_img(img, imgname):
     im = Image.fromarray(img)
-    im.save(os.path.join('/home/pi/', imgname)
+    im.save(os.path.join('/home/pi/', imgname))
