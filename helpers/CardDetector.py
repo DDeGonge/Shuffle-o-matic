@@ -1,6 +1,7 @@
 import helpers.Config as cfg
 import numpy as np
 import cv2
+import sys
 
 np.set_printoptions(threshold=sys.maxsize)
 
@@ -88,7 +89,6 @@ def match_card(qCard, train_ranks, train_suits):
     print('rank\n', qCard.rank_img, '\n\n')
     print('suit\n', qCard.suit_img, '\n\n')
     import scipy.misc
-    import sys
     scipy.misc.toimage(qCard.rank_img, cmin=0.0, cmax=...).save('~/rank.jpg')
     scipy.misc.toimage(qCard.suit_img, cmin=0.0, cmax=...).save('~/suit.jpg')
 
