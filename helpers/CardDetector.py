@@ -64,7 +64,6 @@ def get_card_with_cropped_imgs(img):
 def isolate_object_basic(Qimg, final_width, final_height):
     roi = cv2.bitwise_not(Qimg)
     x,y,w,h = cv2.boundingRect(roi)
-    print(x,y,w,h)
     roi = roi[y:y+h, x:x+w]
     sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
     return sized

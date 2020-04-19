@@ -59,6 +59,8 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
     for _ in range(cfg.shuffle_loops):
         dispenser.enable_motor()
         dispenser.baseline_motor_cur()
+        
+        # Distribute N cards to random bins
         for _ in range(cfg.cards_per_shuffle_loop):
             bin_index = random.randint(0, len(cfg.bin_heights_load_mm)-1)
             # TODO add logic to detect bin overflow
@@ -68,11 +70,12 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
                 raise Exception("Card Jam")
         dispenser.disable_motor()
 
-        # Then return cards to bin
+        # Then return cards to dispenser
         nBins = len(cfg.bin_heights_load_mm)
         p_motor.enable()
         for bin_index in reversed(range(nBins)):
             b_motor.unload_bin_pos(bin_index)
+            time.sleep(0.2)
             p_motor.run()
         p_motor.disable()
     # TODO disable dispenser motor
@@ -80,6 +83,6 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
     b_motor.disable()
 
 if __name__ == "__main__":
-    # main()
+    main()
     # motor_test()
-    cam_test()
+    # cam_test()

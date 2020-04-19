@@ -88,8 +88,9 @@ class PushStep(Motor):
         super().__init__(**kwargs, stepspermm = cfg.p_step_per_mm, stepper_index = 1)
         self.update_defaults(cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
-    def run(self):
+    def run(self, dwell_s=0.1):
         self.absolute_move(cfg.pusher_move_mm, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
+        time.sleep(dwell_s)
         self.absolute_move(0.2, cfg.pusher_vel_mmps, cfg.pusher_acc_mmps2)
 
 
