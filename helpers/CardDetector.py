@@ -12,6 +12,7 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
+BW_THRESH = 60
 
 class Card(object):
     rank = None
@@ -31,8 +32,6 @@ class Train_suits(object):
 
 def Identify_Card(img, train_ranks, train_suits):
     # First process image
-    im = Image.fromarray(img)
-    im.save("/home/pi/raw.jpg")
     processed_img = preprocess_image(img)
     c = get_card_with_cropped_imgs(processed_img)
     c = match_card(c, train_ranks, train_suits)
@@ -43,10 +42,9 @@ def preprocess_image(img):
     blur = cv2.GaussianBlur(gray,(5,5),0)
     img_w, img_h = np.shape(img)[:2]
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
-    thresh_level = bkg_level + 0
+    thresh_level = bkg_level + BW_THRESH
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img
-    # return img
 
 def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
@@ -56,8 +54,6 @@ def get_card_with_cropped_imgs(img):
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
     # Temp debugging TODO remove
-    print('rank\n', Qrank, '\n\n')
-    print('suit\n', Qsuit, '\n\n')
     print(Qrank.shape, Qsuit.shape)
     im = Image.fromarray(Qrank)
     im.save("/home/pi/rank.jpg")
@@ -70,7 +66,7 @@ def get_card_with_cropped_imgs(img):
     if len(Qrank_cnts) != 0:
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
         Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
-        Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), 0, 0)
+        Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.rank_img = Qrank_sized
 
     # Find suit contour and bounding rectangle, isolate and find largest contour
@@ -79,7 +75,7 @@ def get_card_with_cropped_imgs(img):
     if len(Qsuit_cnts) != 0:
         x2,y2,w2,h2 = cv2.boundingRect(Qsuit_cnts[0])
         Qsuit_roi = Qsuit[y2:y2+h2, x2:x2+w2]
-        Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), 0, 0)
+        Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), interpolation=cv2.INTER_CUBIC)
         c.suit_img = Qsuit_sized
 
     return c
@@ -95,9 +91,7 @@ def match_card(qCard, train_ranks, train_suits):
     best_suit_match_name = "Unknown"
     i = 0
 
-    # Temp debugging TODO remove
-    print('rank\n', qCard.rank_img, '\n\n')
-    print('suit\n', qCard.suit_img, '\n\n')
+    print(qCard.rank_img.shape, qCard.suit_img.shape)
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process
