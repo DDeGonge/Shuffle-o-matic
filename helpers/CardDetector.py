@@ -2,6 +2,8 @@ import helpers.Config as cfg
 import numpy as np
 import cv2
 
+np.set_printoptions(threshold=sys.maxsize)
+
 RANK_DIFF_MAX = 2000
 SUIT_DIFF_MAX = 700
 RANK_WIDTH = 70
@@ -81,6 +83,13 @@ def match_card(qCard, train_ranks, train_suits):
     best_rank_match_name = "Unknown"
     best_suit_match_name = "Unknown"
     i = 0
+
+    # Temp debugging TODO remove
+    print('rank\n', qCard.rank_img, '\n\n')
+    print('suit\n', qCard.suit_img, '\n\n')
+    import scipy.misc
+    scipy.misc.toimage(qCard.rank_img, cmin=0.0, cmax=...).save('~/rank.jpg')
+    scipy.misc.toimage(qCard.suit_img, cmin=0.0, cmax=...).save('~/suit.jpg')
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process

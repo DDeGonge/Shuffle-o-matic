@@ -1,18 +1,15 @@
 __version__ = '0.1.0'
 
+import random
+import os
+import time
+
 from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
 # from helpers.DCMotorDriver import DCMotor
 from helpers.CameraDriver import Camera
-
 import helpers.Config as cfg
-
-import random
-import os
-import time
-
-
 
 def main():
     sd = SerialDevice()
@@ -81,6 +78,6 @@ def run_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispens
     b_motor.disable()
 
 if __name__ == "__main__":
-    # motor_test()
     # main()
+    # motor_test()
     cam_test()

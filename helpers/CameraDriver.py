@@ -2,6 +2,7 @@ __version__ = '0.1.0'
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+import scipy.misc
 import helpers.CardDetector as Cards
 import helpers.Config as cfg
 import time
@@ -31,9 +32,14 @@ class Camera(object):
             self.stop_camera()
         return self.rawCapture.array
 
-    def _display_image(self, img):
+    @staticmethod
+    def _display_image(img):
         cv2.imshow("Image", img)
         cv2.waitKey(0)
+
+    @staticmethod
+    def _save_image(img, path):
+        scipy.misc.toimage(img, cmin=0.0, cmax=...).save('path')
 
     def start_camera(self):
         self.camera = PiCamera()
