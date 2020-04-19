@@ -53,13 +53,6 @@ def get_card_with_cropped_imgs(img):
     Qrank = img_cropped[:cfg.H_SPLIT, :]
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
-    # Temp debugging TODO remove
-    print(Qrank.shape, Qsuit.shape)
-    im = Image.fromarray(Qrank)
-    im.save("/home/pi/rank.jpg")
-    im = Image.fromarray(Qsuit)
-    im.save("/home/pi/suit.jpg")
-
     # Find rank contour and bounding rectangle, isolate and find largest contour
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea,reverse=True)
@@ -92,6 +85,10 @@ def match_card(qCard, train_ranks, train_suits):
     i = 0
 
     print(qCard.rank_img.shape, qCard.suit_img.shape)
+    im = Image.fromarray(qCard.rank_img)
+    im.save("/home/pi/rank.jpg")
+    im = Image.fromarray(qCard.suit_img)
+    im.save("/home/pi/suit.jpg")
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process
@@ -102,6 +99,7 @@ def match_card(qCard, train_ranks, train_suits):
         # and store the result with the least difference
         for Trank in train_ranks:
 
+                print(qCard.rank_img.shape, Trank.img.shape)
                 diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
                 rank_diff = int(np.sum(diff_img)/255)
                 
