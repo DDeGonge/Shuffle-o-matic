@@ -56,32 +56,29 @@ def get_card_with_cropped_imgs(img):
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
-    _, Qrank_cnts, _ = cv2.findContours(Qrank, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea, reverse=True)
-    if len(Qrank_cnts) != 0:
-        debug_save_img(Qrank, 'pre_bb.jpg')
-        # Qrank_contour = trim_contour(Qrank_cnts[0], Qrank)
-        Qrank_contour = Qrank_cnts[0][3:-3]
-        x1,y1,w1,h1 = cv2.boundingRect(Qrank_contour)
-        Qrank_roi = Qrank[y1:y1+h1, x1:x1+w1]
-        print(x1, y1, w1, h1)
-        debug_save_img(Qrank, 'post_bb.jpg')
-        Qrank_roi = cv2.bitwise_not(Qrank_roi)
-        Qrank_sized = cv2.resize(Qrank_roi, (RANK_WIDTH, RANK_HEIGHT), interpolation=cv2.INTER_CUBIC)
-        c.rank_img = Qrank_sized
-
-    # Find suit contour and bounding rectangle, isolate and find largest contour
-    _, Qsuit_cnts, _ = cv2.findContours(Qsuit, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    Qsuit_cnts = sorted(Qsuit_cnts, key=cv2.contourArea,reverse=True)
-    if len(Qsuit_cnts) != 0:
-        Qsuit_contour = Qsuit_cnts[0][3:-3]
-        x2,y2,w2,h2 = cv2.boundingRect(Qsuit_contour)
-        Qsuit_roi = Qsuit[y2:y2+h2, x2:x2+w2]
-        Qsuit_roi = cv2.bitwise_not(Qsuit_roi)
-        Qsuit_sized = cv2.resize(Qsuit_roi, (SUIT_WIDTH, SUIT_HEIGHT), interpolation=cv2.INTER_CUBIC)
-        c.suit_img = Qsuit_sized
+    c.rank_img = isolate_object_basic(Qrank, RANK_WIDTH, RANK_HEIGHT)
+    c.suit_img = isolate_object_basic(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
 
     return c
+
+def isolate_object_basic(Qimg, final_width, final_height):
+    x,y,w,h = cv2.boundingRect(Qimg)
+    roi = Qimg[y:y+h, x:x+w]
+    roi = cv2.bitwise_not(roi)
+    sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
+    return sized
+
+def isolate_object_with_contour(Qimg, final_width, final_height):
+    _, contours, _ = cv2.findContours(Qimg, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    contours = sorted(contours, key=cv2.contourArea,reverse=True)
+    if len(contours) != 0:
+        contour = contours[0]
+        x,y,w,h = cv2.boundingRect(contour)
+        roi = Qimg[y:y+h, x:x+w]
+        roi = cv2.bitwise_not(roi)
+        sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
+        return sized
+    return None
 
 def match_card(qCard, train_ranks, train_suits):
     """Finds best rank and suit matches for the query card. Differences
