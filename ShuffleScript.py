@@ -3,6 +3,7 @@ __version__ = '0.1.0'
 import random
 import os
 import time
+import sys
 
 from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice

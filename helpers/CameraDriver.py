@@ -5,6 +5,7 @@ from picamera import PiCamera
 import scipy.misc
 import helpers.CardDetector as Cards
 import helpers.Config as cfg
+import sys
 import time
 import os
 import cv2
