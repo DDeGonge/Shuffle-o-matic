@@ -41,7 +41,7 @@ def preprocess_image(img):
     blur = cv2.GaussianBlur(gray,(5,5),0)
     img_w, img_h = np.shape(img)[:2]
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
-    thresh_level = bkg_level + 0
+    thresh_level = 0 # bkg_level + 0
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img
 
@@ -55,8 +55,8 @@ def get_card_with_cropped_imgs(img):
     # Temp debugging TODO remove
     print('rank\n', Qrank, '\n\n')
     print('suit\n', Qsuit, '\n\n')
-    Image.fromarray(Qrank).save("~/rank.jpg")
-    Image.fromarray(Qsuit).save("~/suit.jpg")
+    Image.fromarray(Qrank).save("/home/pi/rank.jpg")
+    Image.fromarray(Qsuit).save("/home/pi/suit.jpg")
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
     dummy, Qrank_cnts, hier = cv2.findContours(Qrank, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
