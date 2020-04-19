@@ -44,6 +44,7 @@ def preprocess_image(img):
     img_w, img_h = np.shape(img)[:2]
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
     thresh_level = bkg_level + BW_THRESH
+    print(bkg_level)
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img
 
@@ -55,9 +56,10 @@ def get_card_with_cropped_imgs(img):
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
-    Qrank_cnts, _ = cv2.findContours(Qrank, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    _, Qrank_cnts, _ = cv2.findContours(Qrank, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     Qrank_cnts = sorted(Qrank_cnts, key=cv2.contourArea, reverse=True)
     print(Qrank_cnts)
+    print(Qrank_cnts[0])
     if len(Qrank_cnts) != 0:
         debug_save_img(Qrank, 'pre_bb.jpg')
         x1,y1,w1,h1 = cv2.boundingRect(Qrank_cnts[0])
