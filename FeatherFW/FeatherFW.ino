@@ -72,12 +72,12 @@ void loop()
         }
         case 'e':{
           // Enable dispense motor
-          digitalWrite(dcmotor_power, LOW);
+          digitalWrite(dcmotor_power, HIGH);
           break;
         }
         case 'd':{
           // Disable dispense motor
-          digitalWrite(dcmotor_power, HIGH);
+          digitalWrite(dcmotor_power, LOW);
           break;
         }
         case 'c':{

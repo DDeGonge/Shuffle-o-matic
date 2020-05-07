@@ -7,6 +7,7 @@ class Dispenser(object):
     def dispense_card(self):
         resp = self.sd.command('c')
         if "JAM" in resp:
+            self.disable_motor()
             return False
         return True
 
@@ -14,7 +15,7 @@ class Dispenser(object):
         self.sd.command('b')
 
     def enable_motor(self):
-        print('Enabling dispense motor')
+        self.sd.command('e')
 
     def disable_motor(self):
-        print('Disabling dispense motor')
+        self.sd.command('d')
