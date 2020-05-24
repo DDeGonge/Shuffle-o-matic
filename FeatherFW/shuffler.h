@@ -4,26 +4,26 @@
 #include <algorithm>
 
 #define servo_pin 4
-#define dcmotor_power 0
+#define dcmotor_power A0
 #define dcmotor_sense A5
 
 #define s0_en A2
-#define s0_step 5
-#define s0_dir 6
+#define s0_step 11
+#define s0_dir 12
 #define s1_en A3
 #define s1_step 9
 #define s1_dir 10
 #define s2_en A4
-#define s2_step 11
-#define s2_dir 12
+#define s2_step 5
+#define s2_dir 6
 
 Adafruit_NeoPixel pixel = Adafruit_NeoPixel(1, 8, NEO_GRB + NEO_KHZ800);
 Servo disp_servo;
 
 using namespace std;
 
-int cur_window_len = 15;
-float cur_thresh_mult = 1.5;
+int cur_window_len = 20;
+float cur_thresh_mult = 1.7;
 int cur_baseline = 0;
 
 struct stepper_obj
@@ -45,4 +45,18 @@ struct stepper_obj
   int32_t pos;
   int8_t invert_dir;
   float steps_per_mm;
+};
+
+struct global_config
+{
+  public:
+  uint16_t step_len_us;               // a
+  uint8_t servo_min_pwm;              // b
+  uint8_t servo_max_pwm;              // c
+  uint16_t dispense_timeout_ms;       // d
+  uint16_t current_detect_freq_hz;    // e
+  uint16_t current_detect_window_ms;  // f
+  float current_threshold_factor;     // g
+  uint16_t servo_return_time_ms;      // h
+  uint8_t dispense_max_attempts;      // i
 };

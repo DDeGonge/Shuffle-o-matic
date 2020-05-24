@@ -26,6 +26,7 @@ void loop()
   all_steppers[0].init(s0_step, s0_dir, s0_en, true);
   all_steppers[1].init(s1_step, s1_dir, s1_en, true);
   all_steppers[2].init(s2_step, s2_dir, s2_en, false);
+  global_config settings;
   
   char serial_data[100];
   setLEDColor(100,0,0);
@@ -73,16 +74,18 @@ void loop()
         case 'e':{
           // Enable dispense motor
           digitalWrite(dcmotor_power, HIGH);
+          disp_servo.attach(servo_pin);
           break;
         }
         case 'd':{
           // Disable dispense motor
           digitalWrite(dcmotor_power, LOW);
+          disp_servo.detach();
           break;
         }
         case 'c':{
           // Dispense one card, with verification
-          bool resp = dispense_card();
+          bool resp = dispense_card(settings);
           if(!resp){
             Serial.println("JAM");
           }
@@ -91,6 +94,7 @@ void loop()
         case 'b':{
           // Baseline dispense motor current
           cur_baseline = calc_cur_threshold(1000);
+          Serial.println(cur_baseline);
           break;
         }
         case 'p':{
@@ -111,6 +115,13 @@ void loop()
           all_steppers[args[0]].update_config(args[1]);
           break;
         }
+        case 'g':{
+          // Configure global setting
+          // g,SETTING_CHAR,NEWVALUE
+          vector<int32_t> args;
+          parse_inputs(serial_data, args);
+          update_settings(settings, args);
+        }
       }
       Serial.println("ok");
       setLEDColor(0,100,0);
@@ -119,8 +130,51 @@ void loop()
   while(true);
 }
 
+void update_settings(global_config &settings, vector<int32_t> args){
+  switch(args[0]){
+    case 49:{  // a
+      settings.step_len_us = args[1];
+      break;
+    }
+    case 50:{  // b
+      settings.servo_min_pwm = args[1];
+      break;
+    }
+    case 51:{  // c
+      settings.servo_max_pwm = args[1];
+      break;
+    }
+    case 52:{  // d
+      settings.dispense_timeout_ms = args[1];
+      break;
+    }
+    case 53:{  // e
+      settings.current_detect_freq_hz = args[1];
+      break;
+    }
+    case 54:{  // f
+      settings.current_detect_window_ms = args[1];
+      break;
+    }
+    case 55:{  // g
+      float new_val = float(args[1]) / 1000;
+      settings.current_threshold_factor = new_val;
+      break;
+    }
+    case 56:{  // h
+      settings.servo_return_time_ms = args[1];
+      break;
+    }
+    case 57:{  // i
+      settings.dispense_max_attempts = args[1];
+      break;
+    }
+  }
+}
+
 float calc_cur_threshold(uint16_t n_samples){
   float sum = 0;
+  delay(200);
   for(uint16_t i = 0; i < n_samples; i++){
     sum += analogRead(dcmotor_sense);
     delay(1);
@@ -128,42 +182,44 @@ float calc_cur_threshold(uint16_t n_samples){
   return (sum / n_samples);
 }
 
-bool dispense_card(){
-  disp_servo.attach(servo_pin);
+bool dispense_card(global_config settings){
+  uint32_t cur_window_len = settings.current_detect_freq_hz * settings.current_detect_window_ms;
+  cur_window_len /= 1000;
   uint16_t cur_window[cur_window_len];
+  uint32_t dwell_time_us = 1000000 / settings.current_detect_freq_hz;
   float window_mean = 0;
   uint16_t window_i = 0;
   for(uint8_t i = 0; i < cur_window_len; i++){cur_window[i] = 0;}
 
   bool disp_success = false;
-  for(uint8_t i = 0; i < 3; i++){
-    disp_servo.write(0);
+  for(uint8_t i = 0; i < settings.dispense_max_attempts; i++){
+    disp_servo.write(settings.servo_min_pwm);
   
     // Wait until card is detected from dispense motor current spike
-    for(uint16_t j = 0; j < 1000; j++){
+    uint32_t t_start_ms = millis();
+    while(millis() < (t_start_ms + settings.dispense_timeout_ms)){
       cur_window[window_i] = analogRead(dcmotor_sense);
       window_i++;
       window_i %= cur_window_len;
       window_mean = calc_mean(cur_window);
-      if(window_mean >= (cur_baseline * cur_thresh_mult)){
+      if(window_mean >= (cur_baseline * settings.current_threshold_factor)){
         disp_success = true;
-        delay(100);
         break;
       }
-      delay(1);
+      delayMicroseconds(dwell_time_us);
     }
 
-    disp_servo.write(135);
-    delay(600);
+    disp_servo.write(settings.servo_max_pwm);
 
     if(disp_success==true){
       break;
     }
-  }  
-  disp_servo.detach();
+
+    delay(settings.servo_return_time_ms);
+  }
 
   // check for jam
-  if(calc_cur_threshold(100)>(cur_baseline*cur_thresh_mult)){
+  if(calc_cur_threshold(100) > (cur_baseline * 2 * settings.current_threshold_factor)){
     return false;
   }
   return disp_success;

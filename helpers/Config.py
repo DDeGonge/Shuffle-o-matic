@@ -1,22 +1,47 @@
-# Stepper parameters
+""" MOTOR PARAMETERS """
 b_step_per_mm = 80
 d_step_per_mm = 80
 p_step_per_mm = 80
 
-# Pins
-servo_min = 4.5
-servo_max = 10
+step_len_us = 1  # NOT CURRENTLY USED
 
-# Dispense Parameters
-servo_speed_rps = 0.75
-servo_dwell_s = 0.2
+disp_move_mm = 120
+disp_vel_mmps = 30
+disp_acc_mmps2 = 100
 
-# Shuffle Parameters
+pusher_move_mm = 68
+pusher_vel_mmps = 520
+pusher_acc_mmps2 = 12500
+
+bin_vel_mmps = 400
+bin_acc_mmps2 = 3500
+
+bin_heights_load_mm = [0.1, 9, 16, 24, 32, 39, 47, 54]  # bin 0 (bottom) to bin n (top)
+bin_unload_shift_mm = 32
+
+
+""" DISPENSE PARAMETERS """
+dc_motor_spin_down_dwell_s = 0.4
+min_time_between_dispenses_s = 0.3
+Dispense_Parameters = {  # All parameters must be ints
+    'servo_min_pwm': 0,
+    'servo_max_pwm': 135,
+    'dispense_timeout_ms': 600,
+    'current_detect_freq_hz': 500,
+    'current_detect_window_ms': 100,
+    'current_threshold_factor': 1500,  # Multiply by 1000
+    'servo_return_time_ms': 500,
+    'dispense_max_attempts': 3
+}
+
+
+""" SHUFFLING PARAMETERS """
 cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
 shuffle_loops = 4
-max_cards_per_bin = 20
+max_cards_per_bin = 8
 
-# Camera Parameters
+
+""" CAMERA PARAMETERS """
 # Cropped region of card window
 H_MIN = 245
 H_MAX = 570
@@ -25,20 +50,18 @@ W_MAX = 610
 # Split line between card number and suit, from top
 H_SPLIT = 185
 
-# Other Junk
-step_len_s = 0.000001  # 1us is normal
 
-disp_move_mm = 120
-disp_vel_mmps = 30
-disp_acc_mmps2 = 100
 
-pusher_move_mm = 68
-pusher_vel_mmps = 520
-pusher_acc_mmps2 = 12000
-
-bin_vel_mmps = 400
-bin_acc_mmps2 = 4000
-
-# bin_heights_load_mm = [0.1, 6, 13.5, 21, 28.5, 36, 43.5, 52]  # bin 0 (bottom) to bin n (top)
-bin_heights_load_mm = [0.1, 9, 16, 24, 32, 39, 47, 54]
-bin_unload_shift_mm = 32  # bin 0 (bottom) to bin n (top)
+""" FEATHER COMM PARAMETERS """
+# Chars used for setting parameters on feather
+Feather_Parameter_Chars = {
+    'step_len_us': 'a',
+    'servo_min_pwm': 'b',
+    'servo_max_pwm': 'c',
+    'dispense_timeout_ms': 'd',
+    'current_detect_freq_hz': 'e',
+    'current_detect_window_ms': 'f',
+    'current_threshold_factor': 'g',
+    'servo_return_time_ms': 'h',
+    'dispense_max_attempts': 'i'
+}

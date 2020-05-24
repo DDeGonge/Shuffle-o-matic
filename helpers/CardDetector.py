@@ -44,7 +44,6 @@ def preprocess_image(img):
     img_w, img_h = np.shape(img)[:2]
     bkg_level = gray[int(img_h/100)][int(img_w/2)]
     thresh_level = bkg_level + BW_THRESH
-    print(bkg_level)
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img
 
@@ -56,8 +55,8 @@ def get_card_with_cropped_imgs(img):
     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
-    c.rank_img = isolate_object_basic(Qrank, RANK_WIDTH, RANK_HEIGHT)
-    c.suit_img = isolate_object_basic(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
+    c.rank_img = isolate_object_with_contour(Qrank, RANK_WIDTH, RANK_HEIGHT)
+    c.suit_img = isolate_object_with_contour(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
 
     return c
 
@@ -69,13 +68,13 @@ def isolate_object_basic(Qimg, final_width, final_height):
     return sized
 
 def isolate_object_with_contour(Qimg, final_width, final_height):
+    Qimg = cv2.bitwise_not(Qimg)
     _, contours, _ = cv2.findContours(Qimg, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    contours = sorted(contours, key=cv2.contourArea,reverse=True)
+    contours = sorted(contours, key=cv2.contourArea, reverse=True)
     if len(contours) != 0:
         contour = contours[0]
         x,y,w,h = cv2.boundingRect(contour)
         roi = Qimg[y:y+h, x:x+w]
-        roi = cv2.bitwise_not(roi)
         sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
         return sized
     return None

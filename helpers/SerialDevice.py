@@ -2,6 +2,7 @@ __version__ = '0.1.0'
 
 import serial
 import serial.tools.list_ports
+import helpers.Config as cfg
 import time
 
 VIDPID = '239A:8022'
@@ -10,9 +11,11 @@ S_TIMEOUT = 0.2   # Serial command timeout
 R_TIMEOUT = 10  # Wait for reponse timeout
 
 class SerialDevice(object):
-    def __init__(self):
+    def __init__(self, configure_on_connect=True):
         self.comport = self.get_com_port()
-        self.serial_dev = serial.Serial(self.comport, BAUD, timeout=S_TIMEOUT) # May need to add stopbit
+        self.serial_dev = serial.Serial(self.comport, BAUD, timeout=S_TIMEOUT)
+        if configure_on_connect:
+            self.configure()
 
     def get_com_port(self):
         all_ports = list(serial.tools.list_ports.comports())
@@ -31,4 +34,12 @@ class SerialDevice(object):
                 if 'ok' in resp:
                     return last_resp
                 else:
+                    print(resp)
                     last_resp = resp
+
+    def configure(self):
+        self.command('g,a,{}'.format(cfg.step_len_us))
+        for key, value in cfg.Dispense_Parameters.items():
+            command_char = cfg.Feather_Parameter_Chars.get(key)
+            if command_char:
+                self.command('g,{},{}'.format(command_char, value))
