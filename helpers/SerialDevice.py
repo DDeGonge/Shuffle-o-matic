@@ -38,8 +38,5 @@ class SerialDevice(object):
                     last_resp = resp
 
     def configure(self):
-        self.command('g,a,{}'.format(cfg.step_len_us))
-        for key, value in cfg.Dispense_Parameters.items():
-            command_char = cfg.Feather_Parameter_Chars.get(key)
-            if command_char:
-                self.command('g,{},{}'.format(command_char, value))
+        for key, value in cfg.Feather_Parameter_Chars.items():
+            self.command('g,{},{}'.format(key, value))

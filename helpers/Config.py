@@ -23,16 +23,14 @@ bin_unload_shift_mm = 32
 """ DISPENSE PARAMETERS """
 dc_motor_spin_down_dwell_s = 0.4
 min_time_between_dispenses_s = 0.3
-Dispense_Parameters = {  # All parameters must be ints
-    'servo_min_pwm': 0,
-    'servo_max_pwm': 135,
-    'dispense_timeout_ms': 600,
-    'current_detect_freq_hz': 500,
-    'current_detect_window_ms': 100,
-    'current_threshold_factor': 1500,  # Multiply by 1000
-    'servo_return_time_ms': 500,
-    'dispense_max_attempts': 3
-}
+servo_min_pwm = 25
+servo_max_pwm = 160
+dispense_timeout_ms = 600
+current_detect_freq_hz = 500
+current_detect_window_ms = 100
+current_threshold_factor = 1500  # Multiply by 1000, must be int
+servo_return_time_ms = 500
+dispense_max_attempts = 3
 
 
 """ SHUFFLING PARAMETERS """
@@ -53,15 +51,15 @@ H_SPLIT = 185
 
 
 """ FEATHER COMM PARAMETERS """
-# Chars used for setting parameters on feather
+# Chars used for setting parameters on feather. All vars here must be int
 Feather_Parameter_Chars = {
-    'step_len_us': 'a',
-    'servo_min_pwm': 'b',
-    'servo_max_pwm': 'c',
-    'dispense_timeout_ms': 'd',
-    'current_detect_freq_hz': 'e',
-    'current_detect_window_ms': 'f',
-    'current_threshold_factor': 'g',
-    'servo_return_time_ms': 'h',
-    'dispense_max_attempts': 'i'
+    'a': step_len_us,
+    'b': servo_min_pwm,
+    'c': servo_max_pwm,
+    'd': dispense_timeout_ms,
+    'e': current_detect_freq_hz,
+    'f': current_detect_window_ms,
+    'g': current_threshold_factor,
+    'h': servo_return_time_ms,
+    'i': dispense_max_attempts
 }
