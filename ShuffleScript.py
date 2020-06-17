@@ -8,7 +8,7 @@ import sys
 from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
-from WebFuncs import check_for_cmd
+from helpers.WebFuncs import check_for_cmd
 # from helpers.DCMotorDriver import DCMotor
 # from helpers.CameraDriver import Camera
 import helpers.Config as cfg
