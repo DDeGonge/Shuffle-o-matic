@@ -1,9 +1,9 @@
 __version__ = '0.1.0'
 
-from Gameplay import *
+import os
+from helpers.Gameplay import *
 
-# CMD_FILE = '/var/www/html/data.txt'
-CMD_FILE = 'data.txt'
+CMD_FILE = '/var/www/html/data.txt'
 SHUFFLES = ['RAND', 'BJACK', 'HOLD']
 
 def check_for_cmd():
@@ -76,3 +76,5 @@ if __name__=='__main__':
         print(deck.bin_dispense_index, '\n')
         print('ten: ', deck.get_bin(ten))
         print(deck.bin_dispense_index, '\n')
+        print(deck.is_shuffle_complete())
+        print('\n\n')

@@ -36,7 +36,8 @@ dispense_max_attempts = 3
 """ SHUFFLING PARAMETERS """
 cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
 shuffle_loops = 4
-max_cards_per_bin = 8
+max_cards_per_bin = 10
+planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still isn't in order, give up
 
 
 """ CAMERA PARAMETERS """

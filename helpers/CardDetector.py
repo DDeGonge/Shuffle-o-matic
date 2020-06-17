@@ -1,4 +1,5 @@
 import helpers.Config as cfg
+from helpers.Gameplay import Card
 import numpy as np
 import cv2
 import sys
@@ -14,12 +15,6 @@ RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
 BW_THRESH = 45
-
-class Card(object):
-    rank = None
-    suit = None
-    rank_img = None
-    suit_img = None
 
 class Train_ranks(object):
     def __init__(self):
@@ -57,6 +52,9 @@ def get_card_with_cropped_imgs(img):
     # Find rank contour and bounding rectangle, isolate and find largest contour
     c.rank_img = isolate_object_with_contour(Qrank, RANK_WIDTH, RANK_HEIGHT)
     c.suit_img = isolate_object_with_contour(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
+
+    debug_save_img(c.rank_img, 'rank_img.jpg')
+    debug_save_img(c.suit_img, 'suit_img.jpg')
 
     return c
 

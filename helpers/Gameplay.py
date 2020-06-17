@@ -86,6 +86,11 @@ class GameSet(object):
 
         return None
 
+    def is_shuffle_complete(self):
+        if all([bin_i == len(self.bin_order[bin_num]) for bin_num, bin_i in enumerate(self.bin_dispense_index)]):
+            return True
+        return False
+
 class BlackJack(GameSet):
     def generate_deck(self):
         for i in range(self.n_players * 2):
