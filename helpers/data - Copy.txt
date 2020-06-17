@@ -1,0 +1,3 @@
+RAND,7,24
+BJACK,4,,true,true,true,,
+HOLD,5,A,Heart,2,Diamond,3,Diamond,4,Diamond,A,,7,,4,,3,Diamond,8,Diamond,A,,A,,,Diamond,,,,,,,,,,,,,,

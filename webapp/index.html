@@ -57,7 +57,6 @@
 	color: white;
 	}
 
-	}
 	</style>
 	</head>
 
@@ -72,19 +71,19 @@
 			<div class="column left">
 				<h1>Random Shuffle</h1>
 				<p>Enter shuffle parameters.</p>
-				<form method="post">
+				<form method="post" action="formhandler.php">
 					<label for="r_cycles">Number of Shuffle Cycles:</label>
 					<input type="text" id="r_cycles" name="r_cycles" value="4"><br>
 					<label for="r_cards">Number of Cards per Cycles:</label>
 					<input type="text" id="r_cards" name="r_cards" value="20"><br><br>
-					<input type="submit" name="random_shuffle" id="random_shuffle" value="Shuffle">
+					<input type="submit" name="random_shuffle" value="Shuffle">
 				</form>
 			</div>
 
 			<div class="column mid">
 				<h1>Blackjack Shuffle</h1>
 				<p>Enter number of players and who will win.</p>
-				<form method="post">
+				<form method="post" action="formhandler.php">
 					<label for="nplayers">Number of Players (Include Dealer):</label>
 					<input type="text" id="nplayers" name="nplayers"><br><br>
 					<input type="checkbox" id="d_win" name="d_win" value="true">
@@ -99,7 +98,7 @@
 					<label for="p4_win"> Player 4 Blackjack</label><br>
 					<input type="checkbox" id="p5_win" name="p5_win" value="true">
 					<label for="p5_win"> Player 5 Blackjack</label><br><br>
-					<input type="submit" name="blackjack_shuffle" id="blackjack_shuffle" value="Shuffle">
+					<input type="submit" name="blackjack_shuffle" value="Shuffle">
 				</form>
 			</div>
 
@@ -129,7 +128,7 @@
 
 				<h1>Hold-em Shuffle</h1>
 				<p>Designate cards as desired. Any unfilled fields will use a random card.</p>
-				<form method="post">
+				<form method="post" action="formhandler.php">
 					<label for="nplayers">Number of Players (Include Dealer):</label>
 					<input type="text" id="nplayers" name="nplayers"><br><br>
 
@@ -195,7 +194,7 @@
 
 					<input type="checkbox" id="discard_bool" name="discard_bool" value="true" checked>
 					<label for="discard_bool"> One card discarded before flop, turn, and river</label><br><br>
-					<input type="submit" name="holdem_shuffle" id="holdem_shuffle" value="Shuffle">
+					<input type="submit" name="holdem_shuffle" value="Shuffle">
 				</form>
 			</div>
 		</div>	
@@ -205,15 +204,3 @@
 	<p>www.youtube.com/3DprintedLife</p>
 	</footer>
 </html>
-
-<?php
-
-if(isset($_POST['r_cycles']))
-{
-$data=$_POST['r_cycles'];
-$fp = fopen('/tmp/data.txt', 'a');
-fwrite($fp, $data);
-fclose($fp);
-}
-
-?>

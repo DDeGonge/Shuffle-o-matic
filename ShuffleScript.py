@@ -8,9 +8,12 @@ import sys
 from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
+from WebFuncs import check_for_cmd
 # from helpers.DCMotorDriver import DCMotor
 # from helpers.CameraDriver import Camera
 import helpers.Config as cfg
+
+CMD_FILE = '/var/www/html/data.txt'
 
 def main():
     sd = SerialDevice()
@@ -21,7 +24,12 @@ def main():
 
     t_start = time.time()
     try:
-        run_shuffle(d_motor, p_motor, b_motor, dispenser)
+        while True:
+            cmd, data = check_for_cmd()
+            print(cmd)
+            print(data + "/n/n")
+            time.sleep(0.2)
+        # run_shuffle(d_motor, p_motor, b_motor, dispenser)
     finally:
         # d_motor.raise_stage()
         b_motor.disable()
@@ -29,7 +37,6 @@ def main():
         p_motor.disable()
         dispenser.disable_motor()
     
-    print("RUNTIME: {} seconds".format(time.time() - t_start))
     return
 
 def motor_test():
