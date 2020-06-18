@@ -84,8 +84,8 @@ def match_card(qCard, train_ranks, train_suits):
 
     best_rank_match_diff = 10000
     best_suit_match_diff = 10000
-    best_rank_match_name = "Unknown"
-    best_suit_match_name = "Unknown"
+    best_rank_name = None
+    best_suit_name = None
     i = 0
 
     # If no contours were found in query card in preprocess_card function,
@@ -123,7 +123,7 @@ def match_card(qCard, train_ranks, train_suits):
     if (best_suit_match_diff < SUIT_DIFF_MAX):
         qCard.suit = best_suit_name
 
-    print('rank best diff: {}\nsuit best diff: {}'.format(best_rank_match_diff, best_suit_match_diff))
+    # print('rank best diff: {}\nsuit best diff: {}'.format(best_rank_match_diff, best_suit_match_diff))
 
     # Return the identiy of the card and the quality of the suit and rank match
     return qCard
@@ -135,8 +135,7 @@ def load_ranks(filepath):
     train_ranks = []
     i = 0
     
-    for Rank in ['Ace','Two','Three','Four','Five','Six','Seven',
-                 'Eight','Nine','Ten','Jack','Queen','King']:
+    for Rank in ['A','2','3','4','5','6','7','8','9','10','J','Q','K']:
         train_ranks.append(Train_ranks())
         train_ranks[i].name = Rank
         filename = Rank + '.jpg'
@@ -152,7 +151,7 @@ def load_suits(filepath):
     train_suits = []
     i = 0
     
-    for Suit in ['Spades','Diamonds','Clubs','Hearts']:
+    for Suit in ['S','D','C','H']:
         train_suits.append(Train_suits())
         train_suits[i].name = Suit
         filename = Suit + '.jpg'
