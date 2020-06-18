@@ -14,7 +14,8 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-BW_THRESH = 45
+BW_THRESH = 60
+BW_POS = [500,700]  # Should be known good location of white pixel, H x W
 
 class Train_ranks(object):
     def __init__(self):
@@ -36,8 +37,7 @@ def Identify_Card(img, train_ranks, train_suits):
 def preprocess_image(img):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
-    img_w, img_h = np.shape(img)[:2]
-    bkg_level = gray[int(img_h/100)][int(img_w/2)]
+    bkg_level = gray[BW_POS[0]][BW_POS[1]]
     thresh_level = bkg_level + BW_THRESH
     _, proc_img = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
     return proc_img

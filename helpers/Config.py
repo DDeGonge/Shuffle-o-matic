@@ -42,12 +42,12 @@ planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still
 
 """ CAMERA PARAMETERS """
 # Cropped region of card window
-H_MIN = 30
+H_MIN = 10
 H_MAX = 430
-W_MIN = 550
-W_MAX = 800
+W_MIN = 540
+W_MAX = 730
 # Split line between card number and suit, from top
-H_SPLIT = 250
+H_SPLIT = 210
 
 
 
