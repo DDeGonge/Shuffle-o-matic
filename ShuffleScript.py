@@ -129,6 +129,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         if card.rank is None and card.suit is None:
             raise Exception("Unable to identify next card")
 
+        print(card.rank, card.suit)
+
         # Determine where to put card
         bin_index = deck.get_bin(card)
 
