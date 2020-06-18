@@ -26,7 +26,7 @@ def check_for_cmd():
     return (None, None)
 
 def format_rand(data):
-    return [float(i) for i in data]
+    return [int(i) for i in data]
 
 def format_bjack(data):
     # Gather data

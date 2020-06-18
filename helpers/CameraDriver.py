@@ -22,7 +22,6 @@ class Camera(object):
     def read_card(self):
         image = self._capture_image()
         card = Cards.Identify_Card(image, self.train_ranks, self.train_suits)
-        print(card)
         return card
 
     def _capture_image(self, enable_and_disable: bool = True):
@@ -44,6 +43,7 @@ class Camera(object):
 
     def start_camera(self):
         self.camera = PiCamera()
+        self.camera.rotation = 180
         self.rawCapture = PiRGBArray(self.camera)
 
     def stop_camera(self):

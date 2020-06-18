@@ -34,7 +34,6 @@ class SerialDevice(object):
                 if 'ok' in resp:
                     return last_resp
                 else:
-                    print(resp)
                     last_resp = resp
 
     def configure(self):

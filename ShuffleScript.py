@@ -27,15 +27,17 @@ def main():
     d_motor.zero()
 
     t_start = time.time()
+    print('READY')
     try:
         while True:
             cmd, data = check_for_cmd()
             if cmd is not None:
                 pre_shuffle(d_motor, p_motor, b_motor, dispenser)
-                if cmd is 'RAND':
+                if 'RAND' in cmd:
                     random_shuffle(d_motor, p_motor, b_motor, dispenser, data)
-                elif cmd is 'BJACK' or cmd is 'HOLDEM':
+                elif 'BJACK' in cmd or 'HOLDEM' in cmd:
                     planned_shuffle(d_motor, p_motor, b_motor, dispenser, camera, data)
+                print('Shuffle Completed!')
 
             time.sleep(0.1)
     finally:
