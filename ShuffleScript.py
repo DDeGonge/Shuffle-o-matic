@@ -112,7 +112,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
     def empty_trash():
         p_motor.enable()
-        b_motor.unload_bin_pos(0)
+        b_motor.unload_bin_pos(n_bins-1)
         time.sleep(0.1)
         p_motor.run()
         p_motor.disable()

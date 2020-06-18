@@ -44,10 +44,10 @@ planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still
 # Cropped region of card window
 H_MIN = 10
 H_MAX = 430
-W_MIN = 540
-W_MAX = 730
+W_MIN = 505
+W_MAX = 670
 # Split line between card number and suit, from top
-H_SPLIT = 210
+H_SPLIT = 215
 
 
 

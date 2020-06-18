@@ -4,6 +4,7 @@ import os
 from helpers.Gameplay import *
 
 CMD_FILE = '/var/www/html/data.txt'
+# CMD_FILE = 'data.txt'
 SHUFFLES = ['RAND', 'BJACK', 'HOLD']
 
 def check_for_cmd():
@@ -32,7 +33,7 @@ def format_bjack(data):
     # Gather data
     n_players = int(data[0])
     def wincheck(val):
-        if val is "true":
+        if "true" in val:
             return True
         return False
     winner = [wincheck(i) for i in data[1:]]
@@ -57,8 +58,7 @@ def format_holdem(data):
     print("TODO")
 
 if __name__=='__main__':
-    data = ['4','','true','true','true','','']
-    deck = format_bjack(data)
+    cmd, deck = check_for_cmd()
     deck.break_into_bins(8)
     print(deck.deck_order)
     print(deck.bin_order)
