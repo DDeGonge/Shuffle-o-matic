@@ -37,7 +37,7 @@ dispense_max_attempts = 3
 cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
 shuffle_loops = 4
 max_cards_per_bin = 10
-planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still isn't in order, give up
+planned_shuffle_timeout = 80 # If this many cards were trashed and deck still isn't in order, give up
 
 
 """ CAMERA PARAMETERS """
@@ -46,18 +46,18 @@ H_MIN = 300
 H_MAX = 900
 W_MIN = 700
 W_MAX = 1150
-IMAGE_RESOLUTION = (1920,1080)
-IMAGE_ROTATION_DEGS = 100
+IMAGE_RESOLUTION = (1920,1088)
+IMAGE_ROTATION_DEGS = 180
 
 
 """ DETECTION PARAMETERS """
-RANK_DIFF_MAX = 3700
-SUIT_DIFF_MAX = 1700
+RANK_DIFF_MAX = 1700
+SUIT_DIFF_MAX = 700
 RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-BW_THRESH = 76
+BW_THRESH = 28
 MAX_CONTOURS_TO_CHECK = 7
 
 
@@ -76,4 +76,4 @@ Feather_Parameter_Chars = {
 }
 
 """ DEBUG PARAMS """
-DEBUG_MODE = True
+DEBUG_MODE = False

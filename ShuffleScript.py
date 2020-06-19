@@ -138,6 +138,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         else:
             bin_index = deck.get_bin(card)
 
+        print(card.rank, card.suit, ":", bin_index)
+
         # Handle vars if trash card
         if bin_index is None:
             bin_index = n_bins - 1
@@ -159,8 +161,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
             empty_trash()
 
         # Check for shuffle completion
-        # if deck.is_shuffle_complete:
-        #    break
+        if deck.is_shuffle_complete:
+            pass
     else:
         print("Planned Shuffle Timeout")
 
