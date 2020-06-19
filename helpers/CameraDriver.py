@@ -21,8 +21,8 @@ class Camera(object):
         self.train_ranks = Cards.load_calibration_set(self.TRAIN_PATH, ALLRANKS)
         self.train_suits = Cards.load_calibration_set(self.TRAIN_PATH, ALLSUITS)
 
-    def read_card(self):
-        image = self._capture_image()
+    def read_card(self, enable_and_disable: bool = False):
+        image = self._capture_image(enable_and_disable)
         card = Cards.Identify_Card(image, self.train_ranks, self.train_suits)
         return card
 
@@ -30,7 +30,7 @@ class Camera(object):
         img = self._capture_image()
         return [Cards.preprocess_image(img, int(exp)) for exp in exposures]
 
-    def _capture_image(self, enable_and_disable: bool = False):
+    def _capture_image(self, enable_and_disable):
         if enable_and_disable:
             self.start_camera()
         self.camera.capture(self.rawCapture, format="bgr")

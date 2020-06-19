@@ -107,6 +107,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
     n_bins = len(cfg.bin_heights_load_mm)
     cards_in_trash = 0
 
+    camera.start_camera()
+
     # Generate bin reqs for deck
     deck.break_into_bins(n_bins=n_bins)
 
@@ -162,6 +164,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
     else:
         print("Planned Shuffle Timeout")
 
+    camera.stop_camera()
+
 
 def post_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
     dispenser.disable_motor()
@@ -198,7 +202,7 @@ def cam_test():
     c = Camera()
     while True:
         _ = input('Press enter to read card')
-        card = c.read_card()
+        card = c.read_card(enable_and_disable=True)
         print(card.rank, card.suit)
 
 
