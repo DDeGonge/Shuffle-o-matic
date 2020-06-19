@@ -5,6 +5,7 @@ from picamera import PiCamera
 import scipy.misc
 import helpers.CardDetector as Cards
 import helpers.Config as cfg
+from helpers.Gameplay import ALLRANKS, ALLSUITS
 import sys
 import time
 import os
@@ -16,8 +17,8 @@ class Camera(object):
     def __init__(self, resolution=cfg.IMAGE_RESOLUTION):
         self.camera = None
         self.rawCapture = None
-        self.train_ranks = Cards.load_ranks(self.TRAIN_PATH)
-        self.train_suits = Cards.load_suits(self.TRAIN_PATH)
+        self.train_ranks = Cards.load_calibration_set(self.TRAIN_PATH, ALLRANKS)
+        self.train_suits = Cards.load_calibration_set(self.TRAIN_PATH, ALLSUITS)
 
     def read_card(self):
         image = self._capture_image()
@@ -51,5 +52,6 @@ class Camera(object):
         self.camera.close()
 
 if __name__=='__main__':
-	c = Camera()
-	c.read_card()
+    c = Camera()
+    card = c.read_card()
+    print(card.rank, card.suit)

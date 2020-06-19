@@ -7,16 +7,11 @@ import os
 from PIL import Image
 
 
-class Train_ranks(object):
-    def __init__(self):
-        self.img = [] # Thresholded, sized rank image loaded from hard drive
-        self.name = "Placeholder"
-
-
-class Train_suits(object):
-    def __init__(self):
-        self.img = [] # Thresholded, sized suit image loaded from hard drive
-        self.name = "Placeholder"
+class Train_Obj(object):
+    """ Stores training image and name for either rank or suit set """
+    def __init__(self, img = [], name = None):
+        self.img = img
+        self.name = name
 
 
 def Identify_Card(img, train_ranks, train_suits):
@@ -36,38 +31,34 @@ def preprocess_image(img):
 
 def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
-    c = Card
-    c.full_img = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
+    qCard = Card
+    qCard.full_img = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
 
     if cfg.DEBUG_MODE:
         debug_save_img(c.full_img, 'fullimg.jpg')
 
-    # Find and isolate up to N largest contours in image
-    c = isolate_object_with_contour(c)
-
-    return c
-
-
-def isolate_object_with_contour(QCard):
-    """ Returns bounding boxes of N largest contours found """
-    Qimg = cv2.bitwise_not(QCard.full_img)
-    _, contours, _ = cv2.findContours(Qimg, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    # Invert image and find contours
+    flipped_img = cv2.bitwise_not(QCard.full_img)
+    _, contours, _ = cv2.findContours(flipped_img, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+    # Trim smallest contours if too many found
     if len(contours) > cfg.MAX_CONTOURS_TO_CHECK:
         contours = contours[:cfg.MAX_CONTOURS_TO_CHECK]
 
+    # Crop contour regions and save as image array to card
     def contour_to_bb(contour):
         x,y,w,h = cv2.boundingRect(contour)
-        return Qimg[y:y+h, x:x+w]
+        return flipped_img[y:y+h, x:x+w]
 
     if len(contours) != 0:
         QCard.test_imgs = [contour_to_bb(contour) for contour in contours]
 
-    return QCard
+    return qCard
 
 
 def match_card(qCard, train_ranks, train_suits):
-    """Finds best rank and suit matches for the query card. Differences
+    """ Finds best rank and suit matches for the query card. Differences
     the query card rank and suit images with the train rank and suit images.
     The best match is the rank or suit image that has the least difference."""
 
@@ -113,38 +104,13 @@ def match_card(qCard, train_ranks, train_suits):
     return qCard
 
 
-def load_ranks(filepath):
-    """Loads rank images from directory specified by filepath. Stores
-    them in a list of Train_ranks objects."""
+def load_calibration_set(filepath, set_names):
+    """ Loads calibration rank or suit images to create calibration set. """
+    def gen_obj(i):
+        img = cv2.imread(os.path.join(filepath, i + '.jpg'), cv2.IMREAD_GRAYSCALE)
+        return Train_Obj(img=img, name=i)
 
-    train_ranks = []
-    i = 0
-    
-    for Rank in ['A','2','3','4','5','6','7','8','9','10','J','Q','K']:
-        train_ranks.append(Train_ranks())
-        train_ranks[i].name = Rank
-        filename = Rank + '.jpg'
-        train_ranks[i].img = cv2.imread(os.path.join(filepath, filename), cv2.IMREAD_GRAYSCALE)
-        i = i + 1
-
-    return train_ranks
-
-
-def load_suits(filepath):
-    """Loads suit images from directory specified by filepath. Stores
-    them in a list of Train_suits objects."""
-
-    train_suits = []
-    i = 0
-    
-    for Suit in ['S','D','C','H']:
-        train_suits.append(Train_suits())
-        train_suits[i].name = Suit
-        filename = Suit + '.jpg'
-        train_suits[i].img = cv2.imread(os.path.join(filepath, filename), cv2.IMREAD_GRAYSCALE)
-        i = i + 1
-
-    return train_suits
+    return [gen_obj(i) for i in set_names]
 
 
 def debug_save_img(img, imgname):
