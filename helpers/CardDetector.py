@@ -14,7 +14,9 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-BW_THRESH = 60
+BW_THRESH = 70
+
+OBJS_TO_CHECK = 5  # Look at up to this many large masses to find suit and rank
 BW_POS = [500,700]  # Should be known good location of white pixel, H x W
 
 class Train_ranks(object):
@@ -45,37 +47,60 @@ def preprocess_image(img):
 def get_card_with_cropped_imgs(img):
     # Then crop out rank and suit
     c = Card
-    img_cropped = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
-    Qrank = img_cropped[:cfg.H_SPLIT, :]
-    Qsuit = img_cropped[cfg.H_SPLIT:, :]
+    c.full_img = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
+    debug_save_img(c.full_img, 'fullimg.jpg')
 
-    # Find rank contour and bounding rectangle, isolate and find largest contour
-    c.rank_img = isolate_object_with_contour(Qrank, RANK_WIDTH, RANK_HEIGHT)
-    c.suit_img = isolate_object_with_contour(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
-
-    debug_save_img(c.rank_img, 'rank_img.jpg')
-    debug_save_img(c.suit_img, 'suit_img.jpg')
+    # Find and isolate up to N largest contours in image
+    c = isolate_object_with_contour(c)
 
     return c
 
-def isolate_object_basic(Qimg, final_width, final_height):
-    roi = cv2.bitwise_not(Qimg)
-    x,y,w,h = cv2.boundingRect(roi)
-    roi = roi[y:y+h, x:x+w]
-    sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
-    return sized
+# def get_card_with_cropped_imgs(img):
+#     # Then crop out rank and suit
+#     c = Card
+#     img_cropped = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
+#     Qrank = img_cropped[:cfg.H_SPLIT, :]
+#     Qsuit = img_cropped[cfg.H_SPLIT:, :]
 
-def isolate_object_with_contour(Qimg, final_width, final_height):
-    Qimg = cv2.bitwise_not(Qimg)
+#     # Find rank contour and bounding rectangle, isolate and find largest contour
+#     c.rank_img = isolate_object_with_contour(Qrank, RANK_WIDTH, RANK_HEIGHT)
+#     c.suit_img = isolate_object_with_contour(Qsuit, SUIT_WIDTH, SUIT_HEIGHT)
+
+#     debug_save_img(c.rank_img, 'rank_img.jpg')
+#     debug_save_img(c.suit_img, 'suit_img.jpg')
+
+#     return c
+
+def isolate_object_with_contour(QCard):
+    """ Returns bounding boxes of N largest contours found """
+    Qimg = cv2.bitwise_not(QCard.full_img)
     _, contours, _ = cv2.findContours(Qimg, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
-    if len(contours) != 0:
-        contour = contours[0]
+    if len(contours) > OBJS_TO_CHECK:
+        contours = contours[:OBJS_TO_CHECK]
+
+    def contour_to_bb(contour):
         x,y,w,h = cv2.boundingRect(contour)
-        roi = Qimg[y:y+h, x:x+w]
-        sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
-        return sized
-    return None
+        return Qimg[y:y+h, x:x+w]
+        # return cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
+
+    if len(contours) != 0:
+        QCard.test_imgs = [contour_to_bb(contour) for contour in contours]
+
+    return QCard
+
+
+# def isolate_object_with_contour(Qimg, final_width, final_height):
+#     Qimg = cv2.bitwise_not(Qimg)
+#     _, contours, _ = cv2.findContours(Qimg, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+#     contours = sorted(contours, key=cv2.contourArea, reverse=True)
+#     if len(contours) != 0:
+#         contour = contours[0]
+#         x,y,w,h = cv2.boundingRect(contour)
+#         roi = Qimg[y:y+h, x:x+w]
+#         sized = cv2.resize(roi, (final_width, final_height), interpolation=cv2.INTER_CUBIC)
+#         return sized
+#     return None
 
 def match_card(qCard, train_ranks, train_suits):
     """Finds best rank and suit matches for the query card. Differences
@@ -84,49 +109,94 @@ def match_card(qCard, train_ranks, train_suits):
 
     best_rank_match_diff = 10000
     best_suit_match_diff = 10000
-    best_rank_name = None
-    best_suit_name = None
-    i = 0
+    qCard.rank = None
+    qCard.suit = None
 
-    # If no contours were found in query card in preprocess_card function,
-    # the img size is zero, so skip the differencing process
-    # (card will be left as Unknown)
-    if (len(qCard.rank_img) != 0) and (len(qCard.suit_img) != 0):
-        
-        # Difference the query card rank image from each of the train rank images,
-        # and store the result with the least difference
+    # Must find at least 2 to find both rank and suit
+    if len(test_img) < 2:
+        return
+
+    for i, test_img in enumerate(qCard.test_imgs):
+        # Find best rank match
+        rank_img = cv2.resize(roi, (RANK_WIDTH, RANK_HEIGHT), interpolation=cv2.INTER_CUBIC)
         for Trank in train_ranks:
-                diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
-                rank_diff = int(np.sum(diff_img)/255)
-                
-                if rank_diff < best_rank_match_diff:
-                    best_rank_diff_img = diff_img
-                    best_rank_match_diff = rank_diff
-                    best_rank_name = Trank.name
+            diff_img = cv2.absdiff(rank_img, Trank.img)
+            rank_diff = int(np.sum(diff_img)/255)
+            
+            if rank_diff < min(best_rank_match_diff, RANK_DIFF_MAX):
+                best_rank_match_diff = rank_diff
+                qCard.rank = Trank.name
 
         # Same process with suit images
+        suit_img = cv2.resize(roi, (SUIT_WIDTH, SUIT_HEIGHT), interpolation=cv2.INTER_CUBIC)
         for Tsuit in train_suits:
-                diff_img = cv2.absdiff(qCard.suit_img, Tsuit.img)
-                suit_diff = int(np.sum(diff_img)/255)
-                
-                if suit_diff < best_suit_match_diff:
-                    best_suit_diff_img = diff_img
-                    best_suit_match_diff = suit_diff
-                    best_suit_name = Tsuit.name
+            diff_img = cv2.absdiff(suit_img, Tsuit.img)
+            suit_diff = int(np.sum(diff_img)/255)
+            
+            if suit_diff < min(best_suit_match_diff, SUIT_DIFF_MAX):
+                best_suit_match_diff = suit_diff
+                qCard.suit = Tsuit.name
 
-    # Combine best rank match and best suit match to get query card's identity.
-    # If the best matches have too high of a difference value, card identity
-    # is still Unknown
-    if (best_rank_match_diff < RANK_DIFF_MAX):
-        qCard.rank = best_rank_name
+        print('rank:', qCard.rank, best_rank_match_diff)
+        print('suit:', qCard.suit, best_suit_match_diff)
+        debug_save_img(rank_img, 'rank{}.jpg'.format(i))
+        debug_save_img(suit_img, 'suit{}.jpg'.format(i))
 
-    if (best_suit_match_diff < SUIT_DIFF_MAX):
-        qCard.suit = best_suit_name
+        if i >= 2 and best_rank_name is not None and best_suit_name is not None:
+            break
 
-    # print('rank best diff: {}\nsuit best diff: {}'.format(best_rank_match_diff, best_suit_match_diff))
-
-    # Return the identiy of the card and the quality of the suit and rank match
     return qCard
+
+# def match_card(qCard, train_ranks, train_suits):
+#     """Finds best rank and suit matches for the query card. Differences
+#     the query card rank and suit images with the train rank and suit images.
+#     The best match is the rank or suit image that has the least difference."""
+
+#     best_rank_match_diff = 10000
+#     best_suit_match_diff = 10000
+#     best_rank_name = None
+#     best_suit_name = None
+#     i = 0
+
+#     # If no contours were found in query card in preprocess_card function,
+#     # the img size is zero, so skip the differencing process
+#     # (card will be left as Unknown)
+#     if (len(qCard.rank_img) != 0) and (len(qCard.suit_img) != 0):
+        
+#         # Difference the query card rank image from each of the train rank images,
+#         # and store the result with the least difference
+#         for Trank in train_ranks:
+#                 diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
+#                 rank_diff = int(np.sum(diff_img)/255)
+                
+#                 if rank_diff < best_rank_match_diff:
+#                     best_rank_diff_img = diff_img
+#                     best_rank_match_diff = rank_diff
+#                     best_rank_name = Trank.name
+
+#         # Same process with suit images
+#         for Tsuit in train_suits:
+#                 diff_img = cv2.absdiff(qCard.suit_img, Tsuit.img)
+#                 suit_diff = int(np.sum(diff_img)/255)
+                
+#                 if suit_diff < best_suit_match_diff:
+#                     best_suit_diff_img = diff_img
+#                     best_suit_match_diff = suit_diff
+#                     best_suit_name = Tsuit.name
+
+#     # Combine best rank match and best suit match to get query card's identity.
+#     # If the best matches have too high of a difference value, card identity
+#     # is still Unknown
+#     if (best_rank_match_diff < RANK_DIFF_MAX):
+#         qCard.rank = best_rank_name
+
+#     if (best_suit_match_diff < SUIT_DIFF_MAX):
+#         qCard.suit = best_suit_name
+
+#     # print('rank best diff: {}\nsuit best diff: {}'.format(best_rank_match_diff, best_suit_match_diff))
+
+#     # Return the identiy of the card and the quality of the suit and rank match
+#     return qCard
 
 def load_ranks(filepath):
     """Loads rank images from directory specified by filepath. Stores

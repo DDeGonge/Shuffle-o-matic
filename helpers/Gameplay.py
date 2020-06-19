@@ -5,8 +5,10 @@ ALLSUITS = ['D', 'H', 'S', 'C']
 
 class Card(object):
     def __init__(self, rank = None, suit = None):
-        self.rank_img = None
-        self.suit_img = None
+        # self.rank_img = None
+        # self.suit_img = None
+        self.full_img = None
+        self.test_imgs = None
         self.rank = rank
         self.suit = suit
 
