@@ -35,6 +35,8 @@ class SerialDevice(object):
                     return last_resp
                 else:
                     last_resp = resp
+                    if cfg.DEBUG_MODE:
+                        print('serial response:', last_resp)
 
     def configure(self):
         for key, value in cfg.Feather_Parameter_Chars.items():

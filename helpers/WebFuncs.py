@@ -55,7 +55,16 @@ def format_bjack(data):
     return deck
 
 def format_holdem(data):
-    print("TODO")
+    # Gather data
+    n_players = int(data[0])
+    discard_between_flops = "true" in data[1]
+
+    # Build desired deck. Prioritize fully defined cards, then rank only, then suit only
+    deck = Holdem(n_players=n_players)
+
+
+    deck.generate_deck(discard_between=discard_between_flops)
+    return deck
 
 if __name__=='__main__':
     cmd, deck = check_for_cmd()

@@ -15,7 +15,7 @@ if(isset($_POST['blackjack_shuffle']))
 
 if(isset($_POST['holdem_shuffle']))
 {
-    fwrite($fp, "HOLD," . $_POST['nplayers']
+    fwrite($fp, "HOLD," . $_POST['nplayers'] . "," . $_POST['discard_bool']
     . "," . $_POST['dealer_card0'] . "," . $_POST['dealer_suit0'] . "," . $_POST['dealer_card1'] . "," . $_POST['dealer_suit1']
     . "," . $_POST['p1_card0'] . "," . $_POST['p1_suit0'] . "," . $_POST['p1_card1'] . "," . $_POST['p1_suit1']
     . "," . $_POST['p2_card0'] . "," . $_POST['p2_suit0'] . "," . $_POST['p2_card1'] . "," . $_POST['p2_suit1']

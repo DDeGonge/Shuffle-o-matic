@@ -63,7 +63,7 @@ class GameSet(object):
         self.n_players = n_players
         self.deck_order = []  # Indices for cardsets in desired deck order
         self.bin_order = []  # Initialized by self.break_into_bins()
-        self.card_sets = []  # Must be in order dealer, p1, p2, etc
+        self.card_sets = []  # Must be in order dealer, p1, p2, etc. Holdem has additional sets after players
         self.bin_dispense_index = None
 
     def add_card_set(self, card_set):
@@ -99,6 +99,22 @@ class BlackJack(GameSet):
             self.deck_order.append((i + 1) % self.n_players)
 
 class Holdem(GameSet):
-    def generate_deck(self):
-        # TODO
-        pass
+    def generate_deck(self, discard_between=True):
+        # Note card set order for holdem is as follows
+        # dealer, p1, p2, p3, p4, p5, p6, p7, flop, turn, river, trash
+        # First handle initial hand deal
+        for i in range(self.n_players * 2):
+            self.deck_order.append((i + 1) % self.n_players)
+
+        # Then handle flop, turn, and river. Discarding between if appropriate
+        if discard_between:
+            self.deck_order.append(11)
+        [self.deck_order.append(8) for i in range(3)]
+
+        if discard_between:
+            self.deck_order.append(11)
+        self.deck_order.append(9)
+
+        if discard_between:
+            self.deck_order.append(11)
+        self.deck_order.append(10)

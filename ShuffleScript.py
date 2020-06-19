@@ -120,21 +120,23 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
     cards_dispensed = 0
     while cards_dispensed < cfg.planned_shuffle_timeout:
-        # See which card is next, try multiple times if failing
+        # See which card is next, try multiple times if failing. Will trash if unable to read
         for i in range(3):
             card = camera.read_card()
             if card.rank is not None and card.suit is not None:
                 break
-            time.sleep(0.2)
-        if card.rank is None and card.suit is None:
-            raise Exception("Unable to identify next card")
+            time.sleep(0.1)
 
-        print(card.rank, card.suit)
+        if cfg.DEBUG_MODE:
+            print(card.rank, card.suit)
 
         # Determine where to put card
-        bin_index = deck.get_bin(card)
+        if card.rank is None and card.suit is None:
+            bin_index = None
+        else:
+            bin_index = deck.get_bin(card)
 
-        # Handle if trash card
+        # Handle vars if trash card
         if bin_index is None:
             bin_index = n_bins - 1
             cards_in_trash += 1
