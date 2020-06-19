@@ -43,21 +43,21 @@ planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still
 """ CAMERA PARAMETERS """
 # Cropped region of card window
 H_MIN = 10
-H_MAX = 430
-W_MIN = 505
-W_MAX = 670
-IMAGE_RESOLUTION = (1920,1080)
-IMAGE_ROTATION_DEGS = 0
+H_MAX = 650
+W_MIN = 750
+W_MAX = 1200
+IMAGE_RESOLUTION = (1080,1920)
+IMAGE_ROTATION_DEGS = 100
 
 
 """ DETECTION PARAMETERS """
-RANK_DIFF_MAX = 1700
-SUIT_DIFF_MAX = 700
+RANK_DIFF_MAX = 3700
+SUIT_DIFF_MAX = 1700
 RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-BW_THRESH = 170
+BW_THRESH = 76
 MAX_CONTOURS_TO_CHECK = 7
 
 
@@ -76,4 +76,4 @@ Feather_Parameter_Chars = {
 }
 
 """ DEBUG PARAMS """
-DEBUG_MODE = False
+DEBUG_MODE = True

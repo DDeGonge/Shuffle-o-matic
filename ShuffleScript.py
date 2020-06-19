@@ -118,8 +118,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         p_motor.disable()
         cards_in_trash = 0
 
-    cards_dispensed = 0
-    while cards_dispensed < cfg.planned_shuffle_timeout:
+    junk_cards_dispensed = 0
+    while junk_cards_dispensed < cfg.planned_shuffle_timeout:
         # See which card is next, try multiple times if failing. Will trash if unable to read
         for i in range(3):
             card = camera.read_card()
@@ -140,6 +140,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         if bin_index is None:
             bin_index = n_bins - 1
             cards_in_trash += 1
+            junk_cards_dispensed += 1
 
         # Move to bin location
         b_motor.load_bin_pos(bin_index)
@@ -156,8 +157,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
             empty_trash()
 
         # Check for shuffle completion
-        if deck.is_shuffle_complete:
-            break
+        # if deck.is_shuffle_complete:
+        #    break
     else:
         print("Planned Shuffle Timeout")
 

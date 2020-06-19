@@ -25,6 +25,10 @@ class Camera(object):
         card = Cards.Identify_Card(image, self.train_ranks, self.train_suits)
         return card
 
+    def exposure_sweep(self, exposures):
+        img = self._capture_image()
+        return [Cards.preprocess_image(img, int(exp)) for exp in exposures]
+
     def _capture_image(self, enable_and_disable: bool = True):
         if enable_and_disable:
             self.start_camera()

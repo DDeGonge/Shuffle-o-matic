@@ -22,10 +22,12 @@ def Identify_Card(img, train_ranks, train_suits):
     return c
 
 
-def preprocess_image(img):
+def preprocess_image(img, exp_threshold = None):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
-    _, proc_img = cv2.threshold(blur, cfg.BW_THRESH, 255, cv2.THRESH_BINARY)
+    if exp_threshold is None:
+        exp_threshold = cfg.BW_THRESH
+    _, proc_img = cv2.threshold(blur, exp_threshold, 255, cv2.THRESH_BINARY)
     return proc_img
 
 
@@ -35,10 +37,10 @@ def get_card_with_cropped_imgs(img):
     qCard.full_img = img[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
 
     if cfg.DEBUG_MODE:
-        debug_save_img(c.full_img, 'fullimg.jpg')
+        debug_save_img(qCard.full_img, 'fullimg.jpg')
 
     # Invert image and find contours
-    flipped_img = cv2.bitwise_not(QCard.full_img)
+    flipped_img = cv2.bitwise_not(qCard.full_img)
     _, contours, _ = cv2.findContours(flipped_img, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
@@ -52,7 +54,7 @@ def get_card_with_cropped_imgs(img):
         return flipped_img[y:y+h, x:x+w]
 
     if len(contours) != 0:
-        QCard.test_imgs = [contour_to_bb(contour) for contour in contours]
+        qCard.test_imgs = [contour_to_bb(contour) for contour in contours]
 
     return qCard
 
@@ -69,7 +71,7 @@ def match_card(qCard, train_ranks, train_suits):
 
     # Must find at least 2 to find both rank and suit
     if len(qCard.test_imgs) < 2:
-        return
+        return qCard
 
     for i, test_img in enumerate(qCard.test_imgs):
         # Find best rank match
