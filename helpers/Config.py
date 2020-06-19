@@ -42,11 +42,11 @@ planned_shuffle_timeout = 150 # If this many cards were dispensed and deck still
 
 """ CAMERA PARAMETERS """
 # Cropped region of card window
-H_MIN = 10
-H_MAX = 650
-W_MIN = 750
-W_MAX = 1200
-IMAGE_RESOLUTION = (1080,1920)
+H_MIN = 300
+H_MAX = 900
+W_MIN = 700
+W_MAX = 1150
+IMAGE_RESOLUTION = (1920,1080)
 IMAGE_ROTATION_DEGS = 100
 
 

@@ -197,11 +197,12 @@ def motor_test():
 def cam_test():
     c = Camera()
     while True:
+        _ = input('Press enter to read card')
         card = c.read_card()
         print(card.rank, card.suit)
 
 
 if __name__ == "__main__":
-    main()
+    # main()
     # motor_test()
-    # cam_test()
+    cam_test()

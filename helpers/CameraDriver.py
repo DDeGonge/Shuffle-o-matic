@@ -17,6 +17,7 @@ class Camera(object):
     def __init__(self, resolution=cfg.IMAGE_RESOLUTION):
         self.camera = None
         self.rawCapture = None
+        self.resolution = resolution
         self.train_ranks = Cards.load_calibration_set(self.TRAIN_PATH, ALLRANKS)
         self.train_suits = Cards.load_calibration_set(self.TRAIN_PATH, ALLSUITS)
 
@@ -29,7 +30,7 @@ class Camera(object):
         img = self._capture_image()
         return [Cards.preprocess_image(img, int(exp)) for exp in exposures]
 
-    def _capture_image(self, enable_and_disable: bool = True):
+    def _capture_image(self, enable_and_disable: bool = False):
         if enable_and_disable:
             self.start_camera()
         self.camera.capture(self.rawCapture, format="bgr")
@@ -48,7 +49,12 @@ class Camera(object):
 
     def start_camera(self):
         self.camera = PiCamera()
+        self.configure_camera()
+
+    def configure_camera(self):
         self.camera.rotation = cfg.IMAGE_ROTATION_DEGS
+        self.camera.resolution = self.resolution
+        self.camera.exposure_mode = 'off'
         self.rawCapture = PiRGBArray(self.camera)
 
     def stop_camera(self):
