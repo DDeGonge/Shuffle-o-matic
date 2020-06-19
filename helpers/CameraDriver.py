@@ -13,7 +13,7 @@ import cv2
 class Camera(object):
     # TRAINING VALS
     TRAIN_PATH = 'helpers/Card_Imgs'
-    def __init__(self, resolution=(1280,720)):
+    def __init__(self, resolution=cfg.IMAGE_RESOLUTION):
         self.camera = None
         self.rawCapture = None
         self.train_ranks = Cards.load_ranks(self.TRAIN_PATH)
@@ -43,7 +43,7 @@ class Camera(object):
 
     def start_camera(self):
         self.camera = PiCamera()
-        self.camera.rotation = 180
+        self.camera.rotation = cfg.IMAGE_ROTATION_DEGS
         self.rawCapture = PiRGBArray(self.camera)
 
     def stop_camera(self):

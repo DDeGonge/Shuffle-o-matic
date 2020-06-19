@@ -46,9 +46,19 @@ H_MIN = 10
 H_MAX = 430
 W_MIN = 505
 W_MAX = 670
-# Split line between card number and suit, from top
-H_SPLIT = 215
+IMAGE_RESOLUTION = (1920,1080)
+IMAGE_ROTATION_DEGS = 0
 
+
+""" DETECTION PARAMETERS """
+RANK_DIFF_MAX = 1700
+SUIT_DIFF_MAX = 700
+RANK_WIDTH = 70
+RANK_HEIGHT = 125
+SUIT_WIDTH = 70
+SUIT_HEIGHT = 100
+BW_THRESH = 170
+MAX_CONTOURS_TO_CHECK = 7
 
 
 """ FEATHER COMM PARAMETERS """
@@ -64,3 +74,6 @@ Feather_Parameter_Chars = {
     'h': servo_return_time_ms,
     'i': dispense_max_attempts
 }
+
+""" DEBUG PARAMS """
+DEBUG_MODE = True
