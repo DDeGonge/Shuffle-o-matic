@@ -118,7 +118,6 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         time.sleep(0.1)
         p_motor.run()
         p_motor.disable()
-        cards_in_trash = 0
 
     junk_cards_dispensed = 0
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
@@ -160,6 +159,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         # Check for full trash
         if cards_in_trash >= cfg.max_cards_per_bin:
             empty_trash()
+            cards_in_trash = 0
 
         # Check for shuffle completion
         if deck.is_shuffle_complete:
@@ -210,10 +210,10 @@ def cam_test():
 
 
 def gen_random_card():
-    from helpers.Gameplay import *
+    import helpers.Gameplay as g
     rank_i = random.randint(0, 12)
     suit_i = random.randint(0, 3)
-    return Card(rank = ALLRANKS[rank_i], suit = ALLSUITS(suit_i))
+    return g.Card(rank = g.ALLRANKS[rank_i], suit = g.ALLSUITS[suit_i])
 
 if __name__ == "__main__":
     main()

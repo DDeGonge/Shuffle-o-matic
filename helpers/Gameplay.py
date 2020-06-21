@@ -89,9 +89,6 @@ class GameSet(object):
         return None
 
     def is_shuffle_complete(self):
-        print(self.bin_dispense_index)
-        print(self.bin_order)
-        print([bin_i == len(self.bin_order[bin_num]) for bin_num, bin_i in enumerate(self.bin_dispense_index)])
         if all([bin_i == len(self.bin_order[bin_num]) for bin_num, bin_i in enumerate(self.bin_dispense_index)]):
             return True
         return False
