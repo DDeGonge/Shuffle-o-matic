@@ -124,7 +124,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
         # See which card is next, try multiple times if failing. Will trash if unable to read
         for i in range(3):
-            card = camera.read_card()
+            # card = camera.read_card()
+            card = gen_random_card()
             if card.rank is not None and card.suit is not None:
                 break
             time.sleep(0.1)
@@ -208,7 +209,13 @@ def cam_test():
         print(card.rank, card.suit)
 
 
+def gen_random_card():
+    from helpers.Gameplay import *
+    rank_i = random.randint(0, 12)
+    suit_i = random.randint(0, 3)
+    return Card(rank = ALLRANKS[rank_i], suit = ALLSUITS(suit_i))
+
 if __name__ == "__main__":
-    # main()
+    main()
     # motor_test()
-    cam_test()
+    # cam_test()
