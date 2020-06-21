@@ -53,8 +53,7 @@ def get_card_with_cropped_imgs(img):
         x,y,w,h = cv2.boundingRect(contour)
         return flipped_img[y:y+h, x:x+w]
 
-    if len(contours) != 0:
-        qCard.test_imgs = [contour_to_bb(contour) for contour in contours]
+    qCard.test_imgs = [contour_to_bb(contour) for contour in contours]
 
     return qCard
 

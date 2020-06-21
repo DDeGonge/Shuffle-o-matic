@@ -163,7 +163,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
         # Check for shuffle completion
         if deck.is_shuffle_complete:
-            pass
+            break
+            # pass
     else:
         print("Planned Shuffle Timeout")
 

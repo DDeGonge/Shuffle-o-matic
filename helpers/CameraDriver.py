@@ -33,6 +33,7 @@ class Camera(object):
     def _capture_image(self, enable_and_disable):
         if enable_and_disable:
             self.start_camera()
+        self.rawCapture = PiRGBArray(self.camera)
         self.camera.capture(self.rawCapture, format="bgr")
         if enable_and_disable:
             self.stop_camera()
@@ -55,7 +56,6 @@ class Camera(object):
         self.camera.rotation = cfg.IMAGE_ROTATION_DEGS
         self.camera.resolution = self.resolution
         self.camera.exposure_mode = 'off'
-        self.rawCapture = PiRGBArray(self.camera)
 
     def stop_camera(self):
         self.rawCapture.truncate()

@@ -10,20 +10,24 @@ SHUFFLES = ['RAND', 'BJACK', 'HOLD']
 def check_for_cmd():
     """ Returns tuple of [Type] [Data] where type is the shuffle type and data
     will contain either random shuffle parameters or the top deck order required """
-    with open(CMD_FILE, 'r+') as f:
-        data = f.readline()
-        f.truncate(0)
+    try:
+        with open(CMD_FILE, 'r+') as f:
+            data = f.readline()
+            f.truncate(0)
 
-    rawdata = data.split(',')
-    if rawdata[0] in SHUFFLES:
-        shuffletype = SHUFFLES.index(rawdata[0])
-        if shuffletype is 0:
-            return (rawdata[0], format_rand(rawdata[1:]))
-        elif shuffletype is 1:
-            return (rawdata[0], format_bjack(rawdata[1:]))
-        elif shuffletype is 2:
-            return (rawdata[0], format_holdem(rawdata[1:]))
+        rawdata = data.split(',')
+        if rawdata[0] in SHUFFLES:
+            shuffletype = SHUFFLES.index(rawdata[0])
+            if shuffletype is 0:
+                return (rawdata[0], format_rand(rawdata[1:]))
+            elif shuffletype is 1:
+                return (rawdata[0], format_bjack(rawdata[1:]))
+            elif shuffletype is 2:
+                return (rawdata[0], format_holdem(rawdata[1:]))
 
+    except:
+        pass
+    
     return (None, None)
 
 def format_rand(data):
