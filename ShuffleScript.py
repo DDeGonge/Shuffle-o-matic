@@ -37,6 +37,7 @@ def main():
                     random_shuffle(d_motor, p_motor, b_motor, dispenser, data)
                 elif 'BJACK' in cmd or 'HOLDEM' in cmd:
                     planned_shuffle(d_motor, p_motor, b_motor, dispenser, camera, data)
+                post_shuffle(d_motor, p_motor, b_motor, dispenser)
                 print('Shuffle Completed!')
 
             time.sleep(0.1)
@@ -89,14 +90,7 @@ def random_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, disp
         time.sleep(cfg.dc_motor_spin_down_dwell_s)
 
         # Return cards from bins to dispenser
-        nBins = len(cfg.bin_heights_load_mm)
-        p_motor.enable()
-        for bin_index in reversed(range(nBins)):
-            b_motor.unload_bin_pos(bin_index)
-            time.sleep(0.1)
-            p_motor.run()
-
-        p_motor.disable()
+        return_all_cards(p_motor, b_motor)
 
 
 def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser, camera:Camera, deck):
@@ -162,8 +156,9 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
         # Check for shuffle completion
         if deck.is_shuffle_complete:
+            return_all_cards(p_motor, b_motor)
             break
-            # pass
+
     else:
         print("Planned Shuffle Timeout")
 
@@ -177,6 +172,17 @@ def post_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispen
     d_motor.enable()
     # d_motor.raise_stage()
     d_motor.disable()
+
+
+def return_all_cards(p_motor, b_motor):
+    nBins = len(cfg.bin_heights_load_mm)
+    p_motor.enable()
+    for bin_index in reversed(range(nBins)):
+        b_motor.unload_bin_pos(bin_index)
+        time.sleep(0.1)
+        p_motor.run()
+
+    p_motor.disable()
 
 
 """ TEMPORARY DEBUGGING FUNCTIONS """

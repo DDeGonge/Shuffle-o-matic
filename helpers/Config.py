@@ -16,7 +16,7 @@ pusher_acc_mmps2 = 12500
 bin_vel_mmps = 400
 bin_acc_mmps2 = 3500
 
-bin_heights_load_mm = [0.1, 9, 16, 24, 32, 39, 47, 54]  # bin 0 (bottom) to bin n (top)
+bin_heights_load_mm = [0.1, 9, 16, 24, 32, 39, 47, 54.5]  # bin 0 (bottom) to bin n (top)
 bin_unload_shift_mm = 32
 
 

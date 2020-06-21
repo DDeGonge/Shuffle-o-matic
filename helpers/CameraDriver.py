@@ -27,7 +27,7 @@ class Camera(object):
         return card
 
     def exposure_sweep(self, exposures):
-        img = self._capture_image()
+        img = self._capture_image(enable_and_disable=True)
         return [Cards.preprocess_image(img, int(exp)) for exp in exposures]
 
     def _capture_image(self, enable_and_disable):
