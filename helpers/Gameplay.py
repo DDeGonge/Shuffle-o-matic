@@ -18,20 +18,23 @@ class CardSet(object):
         self.cards = []  # 2D array, first dimension is card number and second contains acceptable cards
         self.card_found = []
 
-    def add_card(self, rank = None, suit = None):
+    def add_card(self, rank = None, suit = None, specific_cards = None):
         """ Add a single or a range of cards to set """
-        if rank is None:
-            rank = ALLRANKS
-        elif not isinstance(rank, list):
-            rank = [rank]
+        if specific_cards is not None:
+            self.cards.append(specific_cards)
+        else:
+            if rank is None:
+                rank = ALLRANKS
+            elif not isinstance(rank, list):
+                rank = [rank]
 
-        if suit is None:
-            suit = ALLSUITS
-        elif not isinstance(suit, list):
-            suit = [suit]
+            if suit is None:
+                suit = ALLSUITS
+            elif not isinstance(suit, list):
+                suit = [suit]
 
-        thiscard = [Card(rank=r, suit=s) for r in rank for s in suit]
-        self.cards.append(thiscard)
+            thiscard = [Card(rank=r, suit=s) for r in rank for s in suit]
+            self.cards.append(thiscard)
         self.card_found.append(False)
 
     def remove_card(self, card):
@@ -55,6 +58,21 @@ class CardSet(object):
                         self.card_found[i] = True
                     return True
         return False
+
+    def print_cards(self):
+        for n in self.cards:
+            print("CARD", n)
+            for c in n:
+                print(c.rank, c.suit)
+
+    def get_cards_not_in_set(index=0, rank=None, suit=None):
+        """ Optionally give a rank or suit to trim returns """
+        allcards = CardSet()
+        allcards.add_card(rank=rank, suit=suit)
+        for c in self.cards[index]:
+            allcards.remove_card(c)
+        return allcards.cards
+
 
 class GameSet(object):
     """ Group of cardsets which make up a specific game. This object directly dictates

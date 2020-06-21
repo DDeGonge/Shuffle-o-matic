@@ -63,9 +63,64 @@ def format_holdem(data):
     n_players = int(data[0])
     discard_between_flops = "true" in data[1]
 
-    # Build desired deck. Prioritize fully defined cards, then rank only, then suit only
+    # Build desired deck and list of all cards. Any used will be removed (for discards)
     deck = Holdem(n_players=n_players)
+    discards = CardSet()
+    discards.add_card(rank=ALLRANKS, suit=ALLSUITS)
+    hands = [CardSet()] * (n_players + 3)
 
+    # Fill out hands prioritizing fully defined cards, then rank only, then suit only
+    cards_in_set = [3,1,1,2,2,2,2,2,2,2,2]
+    set_i = 0
+    i = 0
+    while i < sum(cards_in_set):
+        for _ in range(cards_in_set[set_i]):
+            rank = data[i]
+            suit = data[i + 1]
+            if rank is not "" and suit is not "":
+                hands[set_i].add_card(rank=rank, suit=suit)
+                discards.remove_card(Card(rank=rank, suit=suit))
+            i += 1
+        set_i += 1
+
+    set_i = 0
+    i = 0
+    while i < sum(cards_in_set):
+        for _ in range(cards_in_set[set_i]):
+            rank = data[i]
+            suit = data[i + 1]
+            if rank is not "" and suit is "":
+                cards_to_add = discards.get_cards_not_in_set(rank=rank)
+                hands[set_i].add_card(specific_cards=cards_to_add)
+                for c in cards_to_add:
+                    discards.remove_card(c)
+            i += 1
+        set_i += 1
+
+    set_i = 0
+    i = 0
+    while i < sum(cards_in_set):
+        for _ in range(cards_in_set[set_i]):
+            rank = data[i]
+            suit = data[i + 1]
+            if rank is "" and suit is not "":
+                cards_to_add = discards.get_cards_not_in_set(suit=suit)
+                hands[set_i].add_card(specific_cards=cards_to_add)
+                for c in cards_to_add:
+                    discards.remove_card(c)
+            i += 1
+        set_i += 1
+
+    set_i = 0
+    i = 0
+    while i < sum(cards_in_set):
+        for _ in range(cards_in_set[set_i]):
+            rank = data[i]
+            suit = data[i + 1]
+            if rank is "" and suit is "":
+                hands[set_i].add_card(discards.cards[0])
+            i += 1
+        set_i += 1
 
     deck.generate_deck(discard_between=discard_between_flops)
     return deck
