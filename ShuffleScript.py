@@ -123,8 +123,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
         # See which card is next, try multiple times if failing. Will trash if unable to read
         for i in range(3):
-            # card = camera.read_card()
-            card = gen_random_card()
+            card = camera.read_card()
             if card.rank is not None and card.suit is not None:
                 break
             time.sleep(0.1)

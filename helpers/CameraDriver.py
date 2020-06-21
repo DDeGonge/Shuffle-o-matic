@@ -58,7 +58,6 @@ class Camera(object):
         self.camera.exposure_mode = 'off'
 
     def stop_camera(self):
-        self.rawCapture.truncate()
         self.camera.close()
 
 if __name__=='__main__':
