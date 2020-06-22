@@ -15,9 +15,18 @@ def check_for_cmd():
             data = f.readline()
             f.truncate(0)
 
-        # data = 'HOLD,4,true,A,Diamond,Q,Heart,K,,,Diamond,A,Club,7,,,Club,6,Heart,9,,A,,A,,,Spade,,Spade,,,,,,,,,,,,,,,,'
-        data.replace('\n','')
+        # DEBUGGIN TODO REMOVE
+        # data = 'HOLD,4,true,A,Diamond,Q,Heart,K,,,Diamond,A,Club,7,,,,6,Heart,9,,A,,A,,,Spade,,Spade,,,,,,,,,,,,,,,,\n'
+
+        # Clean and format data
+        data = data.replace('\n','')
+        data = data.replace('Diamond','D')
+        data = data.replace('Heart','H')
+        data = data.replace('Club','C')
+        data = data.replace('Spade','S')
         rawdata = data.split(',')
+
+        # Process data based on shuffle type key
         if rawdata[0] in SHUFFLES:
             shuffletype = SHUFFLES.index(rawdata[0])
             if shuffletype is 0:
@@ -86,19 +95,21 @@ def format_holdem(data):
                     discards.remove_card(Card(rank=rank, suit=suit))
                 elif pnum is 1 and rank is not "" and suit is "":
                     cards_to_add = discards.get_cards_in_set(rank=rank)
-                    hands[set_i].add_card(specific_cards=cards_to_add)
-                    for c in cards_to_add:
-                        discards.remove_card(c)
+                    if len(cards_to_add) > 0:
+                        hands[set_i].add_card(specific_cards=cards_to_add)
+                        discards.remove_card(cards_to_add[0]) # Remove one card to ensure this hand can always be fulfilled
                 elif pnum is 2 and rank is "" and suit is not "":
                     cards_to_add = discards.get_cards_in_set(suit=suit)
-                    hands[set_i].add_card(specific_cards=cards_to_add)
+                    if len(cards_to_add) > 0:
+                        hands[set_i].add_card(specific_cards=cards_to_add)
+                        discards.remove_card(cards_to_add[0]) # Same
                 elif pnum is 3 and rank is "" and suit is "":
-                    hands[set_i].add_card(discards.cards[0])
+                    hands[set_i].add_card(specific_cards=discards.return_cards())
                 i += 2
             set_i += 1
 
         if cfg.DEBUG_MODE:
-            print("\n\nPASS {}}\n".format(pnum))
+            print("\n\nPASS {}\n".format(pnum))
             for i, h in enumerate(hands):
                 print("Player", i)
                 h.print_cards()
@@ -108,11 +119,12 @@ def format_holdem(data):
             discards.print_cards()
 
     # Duplicate card in discards hand 2 more times
-    discards.add_card(discards.cards[0])
-    discards.add_card(discards.cards[0])
+
+    discards.add_card(specific_cards=discards.return_cards())
+    discards.add_card(specific_cards=discards.return_cards())
 
     if cfg.DEBUG_MODE:
-        print('Discards')
+        print('\n\nDiscards')
         discards.print_cards()
 
     # Add hands to deck in order trash, flop, turn, river, dealer, p1, p2, etc
@@ -141,5 +153,5 @@ if __name__=='__main__':
         print(deck.bin_dispense_index, '\n')
         print('ten: ', deck.get_bin(ten))
         print(deck.bin_dispense_index, '\n')
-        print(deck.is_shuffle_complete())
+        print(deck.is_shuffle_complete)
         print('\n\n')
