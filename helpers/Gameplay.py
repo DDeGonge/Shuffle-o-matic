@@ -39,10 +39,11 @@ class CardSet(object):
 
     def remove_card(self, card):
         """ Remove this card from all card lists if it exists """
-        for i, valid_cards in enumerate(self.cards):
-            for j, c in enumerate(valid_cards):
-                if self._cards_match(card, c):
-                    del self.cards[i][j]
+        if isinstance(card, Card):
+            for i, valid_cards in enumerate(self.cards):
+                for j, c in enumerate(valid_cards):
+                    if self._cards_match(card, c):
+                        del self.cards[i][j]
 
     @staticmethod
     def _cards_match(c1, c2):
@@ -60,18 +61,20 @@ class CardSet(object):
         return False
 
     def print_cards(self):
-        for n in self.cards:
-            print("CARD", n)
+        for i, n in enumerate(self.cards):
+            print("CARD", i)
             for c in n:
                 print(c.rank, c.suit)
 
-    def get_cards_not_in_set(index=0, rank=None, suit=None):
+    def get_cards_in_set(self, index=0, rank=None, suit=None):
         """ Optionally give a rank or suit to trim returns """
         allcards = CardSet()
         allcards.add_card(rank=rank, suit=suit)
-        for c in self.cards[index]:
-            allcards.remove_card(c)
-        return allcards.cards
+        for c in allcards.cards[0]:
+            self.cards[index]
+            if not self.in_list(card=c, mark=False):
+                allcards.remove_card(c)
+        return allcards.cards[0]
 
 
 class GameSet(object):

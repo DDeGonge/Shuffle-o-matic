@@ -1,10 +1,10 @@
 __version__ = '0.1.0'
 
 import os
+import helpers.Config as cfg
 from helpers.Gameplay import *
 
 CMD_FILE = '/var/www/html/data.txt'
-# CMD_FILE = 'data.txt'
 SHUFFLES = ['RAND', 'BJACK', 'HOLD']
 
 def check_for_cmd():
@@ -15,6 +15,8 @@ def check_for_cmd():
             data = f.readline()
             f.truncate(0)
 
+        # data = 'HOLD,4,true,A,Diamond,Q,Heart,K,,,Diamond,A,Club,7,,,Club,6,Heart,9,,A,,A,,,Spade,,Spade,,,,,,,,,,,,,,,,'
+        data.replace('\n','')
         rawdata = data.split(',')
         if rawdata[0] in SHUFFLES:
             shuffletype = SHUFFLES.index(rawdata[0])
@@ -67,10 +69,11 @@ def format_holdem(data):
     deck = Holdem(n_players=n_players)
     discards = CardSet()
     discards.add_card(rank=ALLRANKS, suit=ALLSUITS)
-    hands = [CardSet()] * (n_players + 3)
+    hands = [CardSet() for _ in range(n_players + 3)]
 
     # Fill out hands prioritizing fully defined cards, then rank only, then suit only
     cards_in_set = [3,1,1,2,2,2,2,2,2,2,2]
+    data = data[2:]
     set_i = 0
     i = 0
     while i < sum(cards_in_set):
@@ -80,8 +83,14 @@ def format_holdem(data):
             if rank is not "" and suit is not "":
                 hands[set_i].add_card(rank=rank, suit=suit)
                 discards.remove_card(Card(rank=rank, suit=suit))
-            i += 1
+            i += 2
         set_i += 1
+
+    if cfg.DEBUG_MODE:
+        print("PASS 1\n")
+        for i, h in enumerate(hands):
+            print(i)
+            h.print_cards()
 
     set_i = 0
     i = 0
@@ -90,12 +99,18 @@ def format_holdem(data):
             rank = data[i]
             suit = data[i + 1]
             if rank is not "" and suit is "":
-                cards_to_add = discards.get_cards_not_in_set(rank=rank)
+                cards_to_add = discards.get_cards_in_set(rank=rank)
                 hands[set_i].add_card(specific_cards=cards_to_add)
                 for c in cards_to_add:
                     discards.remove_card(c)
-            i += 1
+            i += 2
         set_i += 1
+
+    if cfg.DEBUG_MODE:
+        print("\n\nPASS 2\n")
+        for i, h in enumerate(hands):
+            print(i)
+            h.print_cards()
 
     set_i = 0
     i = 0
@@ -104,12 +119,16 @@ def format_holdem(data):
             rank = data[i]
             suit = data[i + 1]
             if rank is "" and suit is not "":
-                cards_to_add = discards.get_cards_not_in_set(suit=suit)
+                cards_to_add = discards.get_cards_in_set(suit=suit)
                 hands[set_i].add_card(specific_cards=cards_to_add)
-                for c in cards_to_add:
-                    discards.remove_card(c)
-            i += 1
+            i += 2
         set_i += 1
+
+    if cfg.DEBUG_MODE:
+        print("\n\nPASS 3\n")
+        for i, h in enumerate(hands):
+            print(i)
+            h.print_cards()
 
     set_i = 0
     i = 0
@@ -119,8 +138,14 @@ def format_holdem(data):
             suit = data[i + 1]
             if rank is "" and suit is "":
                 hands[set_i].add_card(discards.cards[0])
-            i += 1
+            i += 2
         set_i += 1
+
+    if cfg.DEBUG_MODE:
+        print("\n\nPASS 4\n")
+        for i, h in enumerate(hands):
+            print(i)
+            h.print_cards()
 
     deck.generate_deck(discard_between=discard_between_flops)
     return deck

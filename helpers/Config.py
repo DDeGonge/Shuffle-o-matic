@@ -76,4 +76,4 @@ Feather_Parameter_Chars = {
 }
 
 """ DEBUG PARAMS """
-DEBUG_MODE = False
+DEBUG_MODE = True
