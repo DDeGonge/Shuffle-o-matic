@@ -70,82 +70,48 @@ def format_holdem(data):
     discards = CardSet()
     discards.add_card(rank=ALLRANKS, suit=ALLSUITS)
     hands = [CardSet() for _ in range(n_players + 3)]
-
-    # Fill out hands prioritizing fully defined cards, then rank only, then suit only
     cards_in_set = [3,1,1,2,2,2,2,2,2,2,2]
     data = data[2:]
-    set_i = 0
-    i = 0
-    while i < sum(cards_in_set):
-        for _ in range(cards_in_set[set_i]):
-            rank = data[i]
-            suit = data[i + 1]
-            if rank is not "" and suit is not "":
-                hands[set_i].add_card(rank=rank, suit=suit)
-                discards.remove_card(Card(rank=rank, suit=suit))
-            i += 2
-        set_i += 1
 
-    if cfg.DEBUG_MODE:
-        print("PASS 1\n")
-        for i, h in enumerate(hands):
-            print(i)
-            h.print_cards()
+    # Fill out hands prioritizing fully defined cards, then rank only, then suit only
+    for pnum in range(4):
+        set_i = 0
+        i = 0
+        while i < sum(cards_in_set):
+            for _ in range(cards_in_set[set_i]):
+                rank = data[i]
+                suit = data[i + 1]
+                if pnum is 0 and rank is not "" and suit is not "":
+                    hands[set_i].add_card(rank=rank, suit=suit)
+                    discards.remove_card(Card(rank=rank, suit=suit))
+                elif pnum is 1 and rank is not "" and suit is "":
+                    cards_to_add = discards.get_cards_in_set(rank=rank)
+                    hands[set_i].add_card(specific_cards=cards_to_add)
+                    for c in cards_to_add:
+                        discards.remove_card(c)
+                elif pnum is 2 and rank is "" and suit is not "":
+                    cards_to_add = discards.get_cards_in_set(suit=suit)
+                    hands[set_i].add_card(specific_cards=cards_to_add)
+                elif pnum is 3 and rank is "" and suit is "":
+                    hands[set_i].add_card(discards.cards[0])
+                i += 2
+            set_i += 1
 
-    set_i = 0
-    i = 0
-    while i < sum(cards_in_set):
-        for _ in range(cards_in_set[set_i]):
-            rank = data[i]
-            suit = data[i + 1]
-            if rank is not "" and suit is "":
-                cards_to_add = discards.get_cards_in_set(rank=rank)
-                hands[set_i].add_card(specific_cards=cards_to_add)
-                for c in cards_to_add:
-                    discards.remove_card(c)
-            i += 2
-        set_i += 1
+        if cfg.DEBUG_MODE:
+            print("PASS {}}\n".format(pnum))
+            for i, h in enumerate(hands):
+                print(i)
+                h.print_cards()
 
-    if cfg.DEBUG_MODE:
-        print("\n\nPASS 2\n")
-        for i, h in enumerate(hands):
-            print(i)
-            h.print_cards()
+    # Duplicate card in discards hand 2 more times
+    discards.cards.append(discards.cards[0])
+    discards.cards.append(discards.cards[0])
+    discards.card_found.append(False)
+    discards.card_found.append(False)
 
-    set_i = 0
-    i = 0
-    while i < sum(cards_in_set):
-        for _ in range(cards_in_set[set_i]):
-            rank = data[i]
-            suit = data[i + 1]
-            if rank is "" and suit is not "":
-                cards_to_add = discards.get_cards_in_set(suit=suit)
-                hands[set_i].add_card(specific_cards=cards_to_add)
-            i += 2
-        set_i += 1
-
-    if cfg.DEBUG_MODE:
-        print("\n\nPASS 3\n")
-        for i, h in enumerate(hands):
-            print(i)
-            h.print_cards()
-
-    set_i = 0
-    i = 0
-    while i < sum(cards_in_set):
-        for _ in range(cards_in_set[set_i]):
-            rank = data[i]
-            suit = data[i + 1]
-            if rank is "" and suit is "":
-                hands[set_i].add_card(discards.cards[0])
-            i += 2
-        set_i += 1
-
-    if cfg.DEBUG_MODE:
-        print("\n\nPASS 4\n")
-        for i, h in enumerate(hands):
-            print(i)
-            h.print_cards()
+    # Add hands to deck in order trash, flop, turn, river, dealer, p1, p2, etc
+    deck.add_card_set(discards)
+    [deck.add_card_set(hand) for hand in hands]
 
     deck.generate_deck(discard_between=discard_between_flops)
     return deck

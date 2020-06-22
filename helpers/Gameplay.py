@@ -123,20 +123,21 @@ class BlackJack(GameSet):
 class Holdem(GameSet):
     def generate_deck(self, discard_between=True):
         # Note card set order for holdem is as follows
-        # dealer, p1, p2, p3, p4, p5, p6, p7, flop, turn, river, trash
+        # trash, flop, turn, river, dealer, p1, p2, p3, p4, p5, p6, p7
+
         # First handle initial hand deal
         for i in range(self.n_players * 2):
-            self.deck_order.append((i + 1) % self.n_players)
+            self.deck_order.append(4 + ((i + 1) % self.n_players))
 
         # Then handle flop, turn, and river. Discarding between if appropriate
         if discard_between:
-            self.deck_order.append(11)
-        [self.deck_order.append(8) for i in range(3)]
+            self.deck_order.append(0)
+        [self.deck_order.append(1) for i in range(3)]
 
         if discard_between:
-            self.deck_order.append(11)
-        self.deck_order.append(9)
+            self.deck_order.append(0)
+        self.deck_order.append(2)
 
         if discard_between:
-            self.deck_order.append(11)
-        self.deck_order.append(10)
+            self.deck_order.append(0)
+        self.deck_order.append(3)
