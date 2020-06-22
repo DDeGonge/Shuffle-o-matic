@@ -98,16 +98,22 @@ def format_holdem(data):
             set_i += 1
 
         if cfg.DEBUG_MODE:
-            print("PASS {}}\n".format(pnum))
+            print("\n\nPASS {}}\n".format(pnum))
             for i, h in enumerate(hands):
-                print(i)
+                print("Player", i)
                 h.print_cards()
+                print('\n')
+            
+            print('Discards')
+            discards.print_cards()
 
     # Duplicate card in discards hand 2 more times
-    discards.cards.append(discards.cards[0])
-    discards.cards.append(discards.cards[0])
-    discards.card_found.append(False)
-    discards.card_found.append(False)
+    discards.add_card(discards.cards[0])
+    discards.add_card(discards.cards[0])
+
+    if cfg.DEBUG_MODE:
+        print('Discards')
+        discards.print_cards()
 
     # Add hands to deck in order trash, flop, turn, river, dealer, p1, p2, etc
     deck.add_card_set(discards)
