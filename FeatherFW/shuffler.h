@@ -4,16 +4,16 @@
 #include <algorithm>
 
 #define servo_pin 4
-#define dcmotor_power A0
-#define dcmotor_sense A5
+#define dcmotor_power A5
+#define dcmotor_sense A4
 
-#define s0_en A2
+#define s0_en A1
 #define s0_step 11
 #define s0_dir 12
-#define s1_en A3
+#define s1_en A2
 #define s1_step 9
 #define s1_dir 10
-#define s2_en A4
+#define s2_en A3
 #define s2_step 5
 #define s2_dir 6
 
