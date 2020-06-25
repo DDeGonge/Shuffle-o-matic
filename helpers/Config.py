@@ -44,7 +44,7 @@ planned_shuffle_timeout = 80 # If this many cards were trashed and deck still is
 # Cropped region of card window
 H_MIN = 50
 H_MAX = 700
-W_MIN = 590
+W_MIN = 610
 W_MAX = 875
 IMAGE_RESOLUTION = (1920,1080)
 IMAGE_ROTATION_DEGS = 0
@@ -57,7 +57,7 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-MAX_CONTOURS_TO_CHECK = 7
+MAX_CONTOURS_TO_CHECK = 10
 
 USE_CAL_IMAGE = True
 BW_THRESH = 5

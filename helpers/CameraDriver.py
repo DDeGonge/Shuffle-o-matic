@@ -12,7 +12,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from PIL import Image
 
-from helpers.Gameplay import ALLRANKS, ALLSUITS
+from helpers.Gameplay import ALLRANKS, ALLSUITS, Card
 
 
 class Train_Obj(object):
@@ -28,7 +28,7 @@ class Camera(object):
         self.resolution = resolution
         self.train_ranks = self.load_calibration_set(self.TRAIN_PATH, ALLRANKS)
         self.train_suits = self.load_calibration_set(self.TRAIN_PATH, ALLSUITS)
-        self.white_offset_img = self.load_offset_image(self.TRAIN_PATH, 'cal.png')
+        self.white_offset_img = self.load_offset_image(self.TRAIN_PATH, 'cal.jpg')
 
     def read_card(self, enable_and_disable: bool = False):
         image = self._capture_image(enable_and_disable)
@@ -71,14 +71,14 @@ class Camera(object):
 
     """ Image recognition functions """
 
-    @staticmethod
-    def preprocess_image(img, exp_threshold = None):
+    def preprocess_image(self, img, exp_threshold = None):
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray,(5,5),0)
         blur_crop = blur[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
         if cfg.USE_CAL_IMAGE:
             # Subtract from background white cal image before thresholding
             blur_crop = self.white_offset_img - blur_crop
+            blur_crop[blur_crop > 200] = 0
             if cfg.DEBUG_MODE:
                 debug_save_img(blur_crop, 'offset_greyscale.jpg')
                 debug_save_img(blur, 'greyscale.jpg')
@@ -97,7 +97,7 @@ class Camera(object):
         the query card rank and suit images with the train rank and suit images.
         The best match is the rank or suit image that has the least difference."""
 
-        qCard = Card
+        qCard = Card()
 
         # Invert image and find contours
         flipped_img = cv2.bitwise_not(processed_image)
@@ -164,7 +164,8 @@ class Camera(object):
 
     @staticmethod
     def load_offset_image(filepath, filename):
-        return cv2.imread(os.path.join(filepath, filename))
+        import_img = cv2.imread(os.path.join(filepath, filename))
+        return cv2.cvtColor(import_img,cv2.COLOR_BGR2GRAY)
 
 
 if __name__=='__main__':
