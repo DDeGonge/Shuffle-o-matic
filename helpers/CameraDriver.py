@@ -87,6 +87,9 @@ class Camera(object):
             exp_threshold = cfg.BW_THRESH
         _, proc_img = cv2.threshold(blur_crop, exp_threshold, 255, cv2.THRESH_BINARY)
 
+        if not cfg.USE_CAL_IMAGE:
+            proc_img = cv2.bitwise_not(processed_image)
+
         if cfg.DEBUG_MODE:
             debug_save_img(proc_img, 'thresholded.jpg')
 
@@ -100,8 +103,7 @@ class Camera(object):
         qCard = Card()
 
         # Invert image and find contours
-        flipped_img = cv2.bitwise_not(processed_image)
-        _, contours, _ = cv2.findContours(flipped_img, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        _, contours, _ = cv2.findContours(processed_image, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
         # Trim smallest contours if too many found
@@ -111,7 +113,7 @@ class Camera(object):
         # Crop contour regions and save as image array to card
         def contour_to_bb(contour):
             x,y,w,h = cv2.boundingRect(contour)
-            return flipped_img[y:y+h, x:x+w]
+            return processed_image[y:y+h, x:x+w]
         qCard.test_imgs = [contour_to_bb(contour) for contour in contours]
 
         best_rank_match_diff = 10000
