@@ -25,6 +25,13 @@ def Identify_Card(img, train_ranks, train_suits):
 def preprocess_image(img, exp_threshold = None):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
+    if USE_CAL_IMAGE:
+        # Subtract background white cal image before threshold
+        cal_img = img = cv2.imread('helpers/Card_Imgs/cal.jpg')
+        blur = cv2.absdiff(blur, cal_img)
+        if cfg.DEBUG_MODE:
+            debug_save_img(blur, 'cal_greyscale.jpg')
+        
     if exp_threshold is None:
         exp_threshold = cfg.BW_THRESH
     _, proc_img = cv2.threshold(blur, exp_threshold, 255, cv2.THRESH_BINARY)

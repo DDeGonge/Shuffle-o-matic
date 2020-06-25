@@ -1,6 +1,7 @@
 from helpers.CameraDriver import Camera
 from helpers.CardDetector import debug_save_img
 import helpers.Config as cfg
+import cv2
 
 # MANUAL CAL PARAMETERS
 EXP_MIN = 70
@@ -19,12 +20,13 @@ def auto_cal():
     print("Ensure blank white playing card is being used")
     c = Camera()
     img_raw = c._capture_image(enable_and_disable=True)
-    img_greyscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    img_gs_blur = cv2.GaussianBlur(gray,(5,5),0)
+    img_greyscale = cv2.cvtColor(img_raw,cv2.COLOR_BGR2GRAY)
+    img_gs_blur = cv2.GaussianBlur(img_greyscale,(5,5),0)
     img_gs_blur_crop = img_gs_blur[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
 
-    debug_save_img(img_raw, 'img_raw' + '.jpg')
-    debug_save_img(img_greyscale, 'img_greyscale' + '.jpg')
+    for r in img_gs_blur_crop:
+        print(r)
+
     debug_save_img(img_gs_blur, 'img_gs_blur' + '.jpg')
     debug_save_img(img_gs_blur_crop, 'img_gs_blur_crop' + '.jpg')
 
