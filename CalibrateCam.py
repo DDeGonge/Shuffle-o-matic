@@ -24,11 +24,9 @@ def auto_cal():
     img_gs_blur = cv2.GaussianBlur(img_greyscale,(5,5),0)
     img_gs_blur_crop = img_gs_blur[cfg.H_MIN:cfg.H_MAX, cfg.W_MIN:cfg.W_MAX]
 
-    for r in img_gs_blur_crop:
-        print(r)
+    debug_save_img(img_gs_blur_crop, 'helpers/Card_Imgs/cal.png')
 
-    debug_save_img(img_gs_blur, 'img_gs_blur' + '.jpg')
-    debug_save_img(img_gs_blur_crop, 'img_gs_blur_crop' + '.jpg')
+    print("Calibration image updated!")
 
 if __name__=='__main__':
     # manual_cal()
