@@ -5,7 +5,7 @@ p_step_per_mm = 80
 
 step_len_us = 1  # NOT CURRENTLY USED
 
-disp_move_mm = 94
+disp_move_mm = 104
 disp_vel_mmps = 50
 disp_acc_mmps2 = 100
 
@@ -42,10 +42,10 @@ planned_shuffle_timeout = 80 # If this many cards were trashed and deck still is
 
 """ CAMERA PARAMETERS """
 # Cropped region of card window
-H_MIN = 50
+H_MIN = 75
 H_MAX = 700
-W_MIN = 610
-W_MAX = 875
+W_MIN = 550
+W_MAX = 850
 IMAGE_RESOLUTION = (1920,1080)
 IMAGE_ROTATION_DEGS = 0
 

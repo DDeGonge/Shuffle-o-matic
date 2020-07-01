@@ -27,8 +27,10 @@ def main():
     d_motor.zero()
 
     t_start = time.time()
-    print('READY')
+    d_motor.enable()
     d_motor.raise_stage()
+
+    print('READY')
     try:
         while True:
             cmd, data = check_for_cmd()
