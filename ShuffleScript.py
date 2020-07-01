@@ -28,6 +28,7 @@ def main():
 
     t_start = time.time()
     print('READY')
+    d_motor.raise_stage()
     try:
         while True:
             cmd, data = check_for_cmd()
@@ -43,14 +44,14 @@ def main():
             time.sleep(0.1)
     finally:
         post_shuffle(d_motor, p_motor, b_motor, dispenser)
+        d_motor.disable()
 
 
 def pre_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispenser:Dispenser):
     b_motor.enable()
     p_motor.disable()
     d_motor.enable()
-    # d_motor.lower_stage()
-    d_motor.disable()
+    d_motor.lower_stage()
     dispenser.disable_motor()
 
 
@@ -165,8 +166,7 @@ def post_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dispen
     p_motor.disable()
     b_motor.disable()
     d_motor.enable()
-    # d_motor.raise_stage()
-    d_motor.disable()
+    d_motor.raise_stage()
 
 
 def return_all_cards(p_motor, b_motor):

@@ -5,8 +5,8 @@ p_step_per_mm = 80
 
 step_len_us = 1  # NOT CURRENTLY USED
 
-disp_move_mm = 120
-disp_vel_mmps = 30
+disp_move_mm = 94
+disp_vel_mmps = 50
 disp_acc_mmps2 = 100
 
 pusher_move_mm = 68
@@ -16,8 +16,8 @@ pusher_acc_mmps2 = 12500
 bin_vel_mmps = 400
 bin_acc_mmps2 = 3500
 
-bin_heights_load_mm = [0.1, 9, 16, 24, 32, 39, 47, 54.5]  # bin 0 (bottom) to bin n (top)
-bin_unload_shift_mm = 32
+bin_heights_load_mm = [0.5, 8.2, 15.9, 23.6, 31.3, 39.0, 46.7, 54.4]  # bin 0 (bottom) to bin n (top)
+bin_unload_shift_mm = 31
 
 
 """ DISPENSE PARAMETERS """
@@ -57,10 +57,10 @@ RANK_WIDTH = 70
 RANK_HEIGHT = 125
 SUIT_WIDTH = 70
 SUIT_HEIGHT = 100
-MAX_CONTOURS_TO_CHECK = 20
+MAX_CONTOURS_TO_CHECK = 5
 
 USE_CAL_IMAGE = True
-BW_THRESH = 5
+BW_THRESH = 10
 
 
 """ FEATHER COMM PARAMETERS """
