@@ -16,8 +16,8 @@ pusher_acc_mmps2 = 12500
 bin_vel_mmps = 400
 bin_acc_mmps2 = 3500
 
-bin_heights_load_mm = [0.5, 8.2, 15.9, 23.6, 31.3, 39.0, 46.7, 54.4]  # bin 0 (bottom) to bin n (top)
-bin_unload_shift_mm = 31
+bin_heights_load_mm = [2.5, 10.2, 17.9, 25.6, 33.3, 41.0, 48.7, 56.4]  # bin 0 (bottom) to bin n (top)
+bin_unload_shift_mm = 30
 
 
 """ DISPENSE PARAMETERS """
