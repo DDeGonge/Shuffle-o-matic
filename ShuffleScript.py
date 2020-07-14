@@ -33,18 +33,22 @@ def main():
     print('READY')
     try:
         while True:
-            cmd, data = check_for_cmd()
-            if cmd is not None:
-                pre_shuffle(d_motor, p_motor, b_motor, dispenser)
-                if 'RAND' in cmd:
-                    random_shuffle(d_motor, p_motor, b_motor, dispenser, data)
-                elif 'BJACK' in cmd or 'HOLDEM' in cmd:
-                    planned_shuffle(d_motor, p_motor, b_motor, dispenser, camera, data)
-                post_shuffle(d_motor, p_motor, b_motor, dispenser)
-                print('Shuffle Completed!')
+            try:
+                cmd, data = check_for_cmd()
+                if cmd is not None:
+                    pre_shuffle(d_motor, p_motor, b_motor, dispenser)
+                    if 'RAND' in cmd:
+                        random_shuffle(d_motor, p_motor, b_motor, dispenser, data)
+                    elif 'BJACK' in cmd or 'HOLDEM' in cmd:
+                        planned_shuffle(d_motor, p_motor, b_motor, dispenser, camera, data)
+                    post_shuffle(d_motor, p_motor, b_motor, dispenser)
+                    print('Shuffle Completed!')
+            except Exception as e:
+                print('Shuffle Errored!', e)
+                pass
 
             time.sleep(0.1)
-    finally:
+    except KeyboardInterrupt:
         post_shuffle(d_motor, p_motor, b_motor, dispenser)
         d_motor.disable()
 
@@ -118,10 +122,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
     junk_cards_dispensed = 0
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
-        card = camera.read_card()
-
-        if cfg.DEBUG_MODE:
-            print(card.rank, card.suit)
+        # card = camera.read_card()
+        card = gen_random_card()
 
         # Determine where to put card
         if card.rank is None and card.suit is None:
@@ -129,7 +131,8 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         else:
             bin_index = deck.get_bin(card)
 
-        print(card.rank, card.suit, ":", bin_index)
+        if cfg.DEBUG_MODE:
+            print(card.rank, card.suit, ":", bin_index)
 
         # Handle vars if trash card
         if bin_index is None:

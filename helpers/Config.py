@@ -60,7 +60,7 @@ SUIT_HEIGHT = 100
 MAX_CONTOURS_TO_CHECK = 5
 
 USE_CAL_IMAGE = True
-BW_THRESH = 10
+BW_THRESH = 12
 
 
 """ FEATHER COMM PARAMETERS """
@@ -78,4 +78,4 @@ Feather_Parameter_Chars = {
 }
 
 """ DEBUG PARAMS """
-DEBUG_MODE = True
+DEBUG_MODE = False
