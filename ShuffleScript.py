@@ -39,7 +39,7 @@ def main():
                     pre_shuffle(d_motor, p_motor, b_motor, dispenser)
                     if 'RAND' in cmd:
                         random_shuffle(d_motor, p_motor, b_motor, dispenser, data)
-                    elif 'BJACK' in cmd or 'HOLDEM' in cmd:
+                    elif 'BJACK' in cmd or 'HOLD' in cmd:
                         planned_shuffle(d_motor, p_motor, b_motor, dispenser, camera, data)
                     post_shuffle(d_motor, p_motor, b_motor, dispenser)
                     print('Shuffle Completed!')

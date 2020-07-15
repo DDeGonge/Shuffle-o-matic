@@ -111,7 +111,7 @@ def format_holdem(data):
         if cfg.DEBUG_MODE:
             print("\n\nPASS {}\n".format(pnum))
             for i, h in enumerate(hands):
-                print("Player", i)
+                print("Set", i)
                 h.print_cards()
                 print('\n')
             
@@ -122,10 +122,6 @@ def format_holdem(data):
 
     discards.add_card(specific_cards=discards.return_cards())
     discards.add_card(specific_cards=discards.return_cards())
-
-    if cfg.DEBUG_MODE:
-        print('\n\nDiscards')
-        discards.print_cards()
 
     # Add hands to deck in order trash, flop, turn, river, dealer, p1, p2, etc
     deck.add_card_set(discards)
