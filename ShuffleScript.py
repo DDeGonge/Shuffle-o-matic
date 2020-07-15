@@ -122,8 +122,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
 
     junk_cards_dispensed = 0
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
-        # card = camera.read_card()
-        card = gen_random_card()
+        card = camera.read_card()
 
         # Determine where to put card
         if card.rank is None and card.suit is None:
@@ -131,8 +130,7 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         else:
             bin_index = deck.get_bin(card)
 
-        if cfg.DEBUG_MODE:
-            print(card.rank, card.suit, ":", bin_index)
+        print(card.rank, card.suit, ":", bin_index)
 
         # Handle vars if trash card
         if bin_index is None:
