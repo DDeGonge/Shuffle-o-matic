@@ -1,5 +1,4 @@
-from helpers.CameraDriver import Camera
-from helpers.CardDetector import debug_save_img
+from helpers.CameraDriver import Camera, debug_save_img
 import helpers.Config as cfg
 import cv2
 
