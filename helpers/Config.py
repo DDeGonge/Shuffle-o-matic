@@ -37,7 +37,7 @@ dispense_max_attempts = 3
 cards_per_shuffle_loop = 20  # Too many and it may fail to dispense
 shuffle_loops = 4
 max_cards_per_bin = 10
-planned_shuffle_timeout = 80 # If this many cards were trashed and deck still isn't in order, give up
+planned_shuffle_timeout = 150 # If this many cards were trashed and deck still isn't in order, give up
 
 
 """ CAMERA PARAMETERS """
@@ -45,7 +45,7 @@ planned_shuffle_timeout = 80 # If this many cards were trashed and deck still is
 H_MIN = 75
 H_MAX = 700
 W_MIN = 550
-W_MAX = 850
+W_MAX = 775
 IMAGE_RESOLUTION = (1920,1080)
 IMAGE_ROTATION_DEGS = 0
 
@@ -60,7 +60,7 @@ SUIT_HEIGHT = 100
 MAX_CONTOURS_TO_CHECK = 5
 
 USE_CAL_IMAGE = True
-BW_THRESH = 12
+BW_THRESH = 15
 
 
 """ FEATHER COMM PARAMETERS """

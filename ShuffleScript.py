@@ -121,25 +121,29 @@ def planned_shuffle(d_motor:DispenseStep, p_motor:PushStep, b_motor:BinStep, dis
         p_motor.disable()
 
     junk_cards_dispensed = 0
+    last_card = camera.read_card()
     while junk_cards_dispensed < cfg.planned_shuffle_timeout:
         card = camera.read_card()
 
-        # Determine where to put card
+        # Determine where to put card. If it is the same as last, it probs failed to dispense
         if card.rank is None and card.suit is None:
             bin_index = None
+        elif last_card.rank is card.rank and last_card.suit is card.suit:
+            print('Previous card failed to dispense. Re-dispensing')
+            pass
         else:
             bin_index = deck.get_bin(card)
+            last_card = card
+            print(card.rank, card.suit, ":", bin_index)
 
-        print(card.rank, card.suit, ":", bin_index)
+            # Handle vars if trash card
+            if bin_index is None:
+                bin_index = n_bins - 1
+                cards_in_trash += 1
+                junk_cards_dispensed += 1
 
-        # Handle vars if trash card
-        if bin_index is None:
-            bin_index = n_bins - 1
-            cards_in_trash += 1
-            junk_cards_dispensed += 1
-
-        # Move to bin location
-        b_motor.load_bin_pos(bin_index)
+            # Move to bin location
+            b_motor.load_bin_pos(bin_index)
 
         # Dispense card
         while time.time() < t_last_dispense + cfg.min_time_between_dispenses_s:
