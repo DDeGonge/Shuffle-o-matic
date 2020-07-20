@@ -1,0 +1,17 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"U1";"FeatherFootprint";1;"FeatherM4";;;
+2;"J21,J9,J1,J8,J2,J4,J3,J14,J5,J6,J7";"PinHeader_1x02_P2.54mm_Vertical";11;"Conn_01x02";;;
+3;"U2";"SOT-223";1;"AZ1117-3.3";;;
+4;"A3,A2,A1";"Pololu_Breakout-16_15.2x20.3mm";3;"Pololu_Breakout_A4988";;;
+5;"J16";"PinHeader_1x08_P2.54mm_Vertical";1;"Conn_01x08";;;
+6;"D2,D1";"LED_0603_1608Metric";2;"LED";;;
+7;"R18";"R_0603_1608Metric";1;"1k5";;;
+8;"R17,R10";"R_0603_1608Metric";2;"174";;;
+9;"R16,R15,R14,R13,R12,R9,R8,R7,R6,R5,R4,R3,R2,R1,R19";"R_0603_1608Metric";15;"10k";;;
+10;"C2,C4,C1";"CP_Elec_6.3x5.8";3;"47uF";;;
+11;"J15";"PinHeader_1x03_P2.54mm_Vertical";1;"Conn_01x03";;;
+12;"J13";"BarrelJack_Wuerth_6941xx301002";1;"Conn_01x02";;;
+13;"Q1";"SOT-23";1;"PMV40UN2R";;;
+14;"R11";"R_0805_2012Metric";1;"1ohm";;;
+15;"J11,J12,J10";"PinSocket_1x04_P2.54mm_Vertical";3;"Conn_01x04";;;
+16;"J17,J18,J19,J20";"MountingHole_2.7mm_M2.5_DIN965_Pad";4;"Hole";;;

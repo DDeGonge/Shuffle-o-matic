@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name KiCad-Schematic-rescue)(type Legacy)(uri "${KIPRJMOD}/KiCad Schematic-rescue.lib")(options "")(descr ""))
+)
