@@ -1,0 +1,1 @@
+Copy both of these files to /var/www/html/ on the Raspberry Pi to run on boot

@@ -29,7 +29,6 @@ class Camera(object):
         self.train_ranks = self.load_calibration_set(self.TRAIN_PATH, ALLRANKS)
         self.train_suits = self.load_calibration_set(self.TRAIN_PATH, ALLSUITS)
         self.white_offset_img = self.load_offset_image(self.TRAIN_PATH, 'cal.jpg')
-        self.save_index = 0
 
     def read_card(self, enable_and_disable: bool = False):
         image = self._capture_image(enable_and_disable)
@@ -93,10 +92,6 @@ class Camera(object):
 
         if cfg.DEBUG_MODE:
             debug_save_img(proc_img, 'thresholded.jpg')
-
-        # TODO remove this - for video purposes only
-        debug_save_img(proc_img, 'pics/{}.jpg'.format(self.save_index))
-        self.save_index += 1
 
         return proc_img
 
