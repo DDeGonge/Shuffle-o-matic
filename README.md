@@ -13,14 +13,14 @@ Hardware required
 |---|---|---|---|
 | | 3D printed Parts | |
 | 3 | 3x Nema 17 stepper motors, <=40mm long | [17HS19-2004S1](https://www.aliexpress.com/item/32604882068.html?spm=a2g0o.detail.1000060.2.1ffd461c5swykl&gps-id=pcDetailBottomMoreThisSeller&scm=1007.13339.169870.0&scm_id=1007.13339.169870.0&scm-url=1007.13339.169870.0&pvid=ccfe8761-8f89-4dc7-9fce-410158e290bb&_t=gps-id:pcDetailBottomMoreThisSeller,scm-url:1007.13339.169870.0,pvid:ccfe8761-8f89-4dc7-9fce-410158e290bb,tpp_buckets:668%230%23131923%2354_668%230%23131923%2354_668%23888%233325%234_668%23888%233325%234_668%232846%238107%231934_668%232717%237559%2373_668%231000022185%231000066059%230_668%233468%2315607%2358_668%232846%238107%231934_668%232717%237559%2373_668%233164%239976%23238_668%233468%2315607%2358) |
-| 1.5m |  gt2 belt | [GT2 6mm width](https://www.aliexpress.com/item/32853559638.html?spm=a2g0s.9042311.0.0.27424c4ddsx6kM)|
-| 5 | gt2 20t idlers with standoffs | |
-| 3 | gt2 20t drive pulleys | |
-| 1 | mgn9 servo | |
+| 1.5m | Gates GT2 belt | [GT2 6mm width](https://www.aliexpress.com/item/32853559638.html?spm=a2g0s.9042311.0.0.27424c4ddsx6kM)|
+| 5 | Gates GT2 20t idlers with standoffs | |
+| 3 | Gates GT2 20t drive pulleys | |
+| 1 | MGN9 servo | |
 | 1 | 600rpm micro gearbox motor | |
-| 2 | 2x MGN9 linear profile bearings, 135mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
-| 1 | 1x MGN9 linear profile bearing, 95mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
-| 6 | 6x 6700 bearing | [6700ZZ](https://www.aliexpress.com/item/32852057465.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
+| 2 | MGN9 linear profile bearings, 135mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
+| 1 | MGN9 linear profile bearing, 95mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
+| 6 | 6700 bearing | [6700ZZ](https://www.aliexpress.com/item/32852057465.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
 | 1 | Raspberry Pi | |
 | 1 | (optional) Raspberry Pi Camera V1.4 | |
 | 1 | (optional) 3x 3mm white led | |
