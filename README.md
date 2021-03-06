@@ -12,10 +12,10 @@ Hardware required
 |Qty|Item|Supplier||
 |---|---|---|---|
 | | 3D printed Parts | |
-| 3 | 3x Nema 17 stepper motors, <=40mm long | [17HS15-1504S-X1 39mm long](https://www.aliexpress.com/item/1005002191787745.html?spm=2114.12010612.8148356.4.2bca2904n3VYBm)|
+| 3 | Nema 17 stepper motors, <=40mm long | [17HS15-1504S-X1 39mm long](https://www.aliexpress.com/item/1005002191787745.html?spm=2114.12010612.8148356.4.2bca2904n3VYBm)|
 | 5 | Gates GT2 20t idlers with standoffs | |
 | 3 | Gates GT2 20t drive pulleys | |
-| 1 | MGN9 servo | |
+| 1 | MG90S servo | [Link](https://ebay.us/60Pxun) |
 | 1 | 600rpm micro gearbox motor | |
 | 2 | MGN9 linear profile bearings, 135mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
 | 1 | MGN9 linear profile bearing, 95mm len | [MGN9C](https://www.aliexpress.com/item/32773296501.html?spm=a2g0o.cart.0.0.54873c00SIeLte&mp=1) |
