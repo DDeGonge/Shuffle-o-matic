@@ -10,7 +10,7 @@ from helpers.MotorDriver import DispenseStep, PushStep, BinStep
 from helpers.SerialDevice import SerialDevice
 from helpers.DispenserDriver import Dispenser
 from helpers.WebFuncs import check_for_cmd
-from helpers.CameraDriver import Camera
+from helpers.CameraDriver import Camera, debug_save_img
 import helpers.Config as cfg
 
 
@@ -216,6 +216,20 @@ def cam_test():
         card = c.read_card(enable_and_disable=True)
         print(card.rank, card.suit)
 
+def cap_deck():
+    c = Camera()
+    sd = SerialDevice()
+    dispenser = Dispenser(serial_device=sd)
+    count = 0
+    for i in range(10):
+        _ = input('press enter to start...')
+        for j in range(10):
+            img = c._capture_image(enable_and_disable=True)
+            debug_save_img(img, '/home/pi/pics/{}.jpg'.format(count))
+            count += 1
+            dispenser.dispense_card()
+
+
 
 def gen_random_card():
     import helpers.Gameplay as g
@@ -224,6 +238,7 @@ def gen_random_card():
     return g.Card(rank = g.ALLRANKS[rank_i], suit = g.ALLSUITS[suit_i])
 
 if __name__ == "__main__":
-    main()
+    # main()
+    cap_deck()
     # motor_test()
     # cam_test()
