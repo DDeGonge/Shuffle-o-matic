@@ -30,5 +30,5 @@ if(isset($_POST['holdem_shuffle']))
 }
 
 fclose($fp);
-header("Location: index.html");
+header("Location: index.php");
 ?>

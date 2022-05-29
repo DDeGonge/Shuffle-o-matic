@@ -1,0 +1,20 @@
+* {
+    box-sizing: border-box;
+}
+
+/*columns color*/
+#rand {
+   background-color: var(--bs-gray-500);
+}
+
+#bjack {
+    background-color: var(--bs-gray-600);
+}
+
+#hold {
+    background-color: var(--bs-gray-700);
+}
+
+footer {
+    background-color: var(--bs-gray-800);
+}
